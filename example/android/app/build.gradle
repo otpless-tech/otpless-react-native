@@ -95,7 +95,7 @@ android {
 
     namespace "com.otplessreactnativeexample"
     defaultConfig {
-        applicationId "com.otplessreactnativeexample"
+        applicationId "com.digvijayanubhav.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
