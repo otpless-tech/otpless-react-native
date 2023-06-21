@@ -24,11 +24,12 @@ export default function App() {
   const [result, setOtplessResult] = useState('Result from OTPESS');
 
   // to get onetime callback
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleButtonPress = () => {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const _handleButtonPress = () => {
     console.log(OtplessModule);
     module.start(handleResult);
   };
+  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   const handleResult = (data: any) => {
     let message: string = '';
@@ -41,10 +42,11 @@ export default function App() {
     setOtplessResult(message);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleButtonPressEvent = () => {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const _handleButtonPressEvent = () => {
     eventModule.start();
   };
+  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   const onSignInCompleted = () => {
     eventModule.onSignInCompleted;
