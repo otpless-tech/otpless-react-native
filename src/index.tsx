@@ -9,15 +9,13 @@ const LINKING_ERROR =
 const OtplessReactNative = NativeModules.OtplessReactNative
   ? NativeModules.OtplessReactNative
   : new Proxy(
-    {},
-    {
-      get() {
-        throw new Error(LINKING_ERROR);
-      },
-    }
-  );
-
-
+      {},
+      {
+        get() {
+          throw new Error(LINKING_ERROR);
+        },
+      }
+    );
 
 class OtplessBaseModule {
   onSignInCompleted() {
@@ -32,17 +30,15 @@ interface OtplessResultCallback {
   (result: any): void;
 }
 
-
 class OtplessEventModule extends OtplessBaseModule {
-
   private eventEmitter: NativeEventEmitter;
 
   constructor(callback: OtplessResultCallback) {
-    super()
+    super();
     this.eventEmitter = new NativeEventEmitter(OtplessReactNative);
-    this.eventEmitter.addListener('OTPlessSignResult', result => {
+    this.eventEmitter.addListener('OTPlessSignResult', (result) => {
       callback(result);
-    })
+    });
   }
 
   start(input: any = null) {
@@ -58,9 +54,7 @@ class OtplessEventModule extends OtplessBaseModule {
   }
 }
 
-
 class OtplessModule extends OtplessBaseModule {
-
   start(callback: OtplessResultCallback) {
     OtplessReactNative.startOtplessWithCallback((result: any) => {
       callback(result);

@@ -3,75 +3,81 @@ import React, { useState } from 'react';
 import { OtplessEventModule, OtplessModule } from 'otpless-react-native';
 import { Button, FlatList, StyleSheet, Text, View } from 'react-native';
 
-import Header, { FintechItem } from './components/Header'
+import Header, { FintechItem } from './components/Header';
 
 export default function App() {
-  const [items, setState] = useState([
-    { id: 1, name: "Paytm" },
-    { id: 2, name: "PhonePe" },
-    { id: 3, name: "GPay" },
-    { id: 4, name: "Mobikwik" },
-    { id: 5, name: "PayPal" },
-    { id: 6, name: "BharatPe" }
+  const [items, _] = useState([
+    { id: 1, name: 'Paytm' },
+    { id: 2, name: 'PhonePe' },
+    { id: 3, name: 'GPay' },
+    { id: 4, name: 'Mobikwik' },
+    { id: 5, name: 'PayPal' },
+    { id: 6, name: 'BharatPe' },
   ]);
 
   const eventModule = new OtplessEventModule((result: any) => {
-    handleResult(result)
-  })
+    handleResult(result);
+  });
 
   const module = new OtplessModule();
 
-  const [result, setOtplessResult] = useState("Result from OTPESS")
+  const [result, setOtplessResult] = useState('Result from OTPESS');
 
   // to get onetime callback
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleButtonPress = () => {
     console.log(OtplessModule);
-    module.start(handleResult)
-  }
+    module.start(handleResult);
+  };
 
-  const handleResult = (result: any) => {
-    let message: string = ""
-    if (result.data == null || result.data == undefined) {
-      message = result.errorMessage;
+  const handleResult = (data: any) => {
+    let message: string = '';
+    if (data.data === null || data.data === undefined) {
+      message = data.errorMessage;
     } else {
-      message = `token: ${result.data.token}`
+      message = `token: ${data.data.token}`;
       // todo here
-
     }
     setOtplessResult(message);
-  }
+  };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleButtonPressEvent = () => {
     eventModule.start();
-  }
+  };
 
   const onSignInCompleted = () => {
     eventModule.onSignInCompleted;
-  }
+  };
 
   const startEventWithParams = () => {
     eventModule.start(createParams());
-  }
+  };
 
   const startCallbackWithParams = () => {
-    module.startWithParams(createParams(), handleResult)
-  }
+    module.startWithParams(createParams(), handleResult);
+  };
 
   const createParams = () => {
     const params = {
-      method: 'get', params: {
-        uxmode: 'autoclick'
-      }
+      method: 'get',
+      params: {
+        uxmode: 'autoclick',
+      },
     };
     return params;
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <Header title="React Fintech List"></Header>
-      <FlatList data={items} renderItem={({ item }) => <FintechItem name={item.name} />} />
-
+      <Header title="React Fintech List" />
+      <FlatList
+        data={items}
+        renderItem={({ item }) => <FintechItem name={item.name} />}
+      />
+      {/* eslint-disable-next-line react-native/no-inline-styles */}
       <View style={{ padding: 24 }}>
+        {/* eslint-disable-next-line react-native/no-inline-styles */}
         <Text style={{ padding: 24 }}>{result}</Text>
       </View>
 
@@ -95,7 +101,6 @@ export default function App() {
           onPress={() => onSignInCompleted()}
         />
       </View>
-
     </View>
   );
 }
@@ -108,11 +113,11 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingTop: 25,
-    flex: 1
+    flex: 1,
   },
   otplessButtonContainer: {
     paddingBottom: 16,
     paddingStart: 24,
     paddingEnd: 24,
-  }
+  },
 });
