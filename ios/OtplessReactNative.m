@@ -1,14 +1,23 @@
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
-@interface RCT_EXTERN_MODULE(OtplessReactNative, NSObject)
+@interface RCT_EXTERN_MODULE(OtplessReactNative, RCTEventEmitter<RCTBridgeModule>)
 
-RCT_EXTERN_METHOD(multiply:(float)a withB:(float)b
-                 withResolver:(RCTPromiseResolveBlock)resolve
-                 withRejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(startOtplessWithEvent)
 
-+ (BOOL)requiresMainQueueSetup
+RCT_EXTERN_METHOD(startOtplessWithCallback:(RCTResponseSenderBlock)callback)
+
+RCT_EXPORT_METHOD(startOtplessWithCallbackParams:(NSDictionary *)param
+                  withCallback: (RCTResponseSenderBlock)callback)
 {
-  return NO;
+}
+
+RCT_EXPORT_METHOD(onSignInCompleted)
+{
+}
+
+RCT_EXPORT_METHOD(showFabButton:(bool)isShowFab)
+{
 }
 
 @end
