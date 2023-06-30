@@ -49,7 +49,7 @@ export default function App() {
   /* eslint-enable @typescript-eslint/no-unused-vars */
 
   const onSignInCompleted = () => {
-    eventModule.onSignInCompleted;
+    eventModule.onSignInCompleted();
   };
 
   const startEventWithParams = () => {

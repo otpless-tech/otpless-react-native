@@ -35,6 +35,16 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate {
         Otpless.sharedInstance.start(vc: viewController!)
     }
     
+    @objc(startOtplessWithEventParams:)
+    func startOtplessWithEventParams(param: [String : Any]?) {
+        isFromEvent = true
+        let viewController = UIApplication.shared.delegate?.window??.rootViewController;
+        Otpless.sharedInstance.delegate = self
+        DispatchQueue.main.async {
+            Otpless.sharedInstance.startwithParams(vc: viewController!, params: param)
+        }
+    }
+    
     @objc(startOtplessWithCallback:)
     func startOtplessWithCallback(callback: @escaping RCTResponseSenderBlock) {
         isFromEvent = false

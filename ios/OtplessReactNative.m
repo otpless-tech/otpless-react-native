@@ -5,6 +5,8 @@
 
 RCT_EXTERN_METHOD(startOtplessWithEvent)
 
+RCT_EXTERN_METHOD(startOtplessWithEventParams:(NSDictionary *)param)
+
 RCT_EXTERN_METHOD(startOtplessWithCallback:(RCTResponseSenderBlock)callback)
 
 RCT_EXPORT_METHOD(startOtplessWithCallbackParams:(NSDictionary *)param
