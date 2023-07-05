@@ -3,24 +3,21 @@ import OtplessSDK
 
 @objc(OtplessReactNative)
 class OtplessReactNative: RCTEventEmitter, onResponseDelegate {
-    private var isFromEvent: Bool = true
-    private var responseSenderCallback: RCTResponseSenderBlock? = nil
     
+    // get the callback for promise
+    private var rctCallbackWrapper: RCTSenderWrapper? = nil
+    
+    // get the callback for event in this object
     func onResponse(response: OtplessSDK.OtplessResponse?) {
         var params = [String: Any]()
         if (response != nil && response?.errorString != nil){
             params["errorMessage"] = response?.errorString
         } else {
             if response != nil && response?.responseData != nil {
-                params =  response!.responseData!
+                params["data"] =  response!.responseData!
             }
         }
-        if(isFromEvent) {
-            sendEvent(withName: "OTPlessSignResult", body: params)
-        } else {
-            self.responseSenderCallback!([params])
-            self.responseSenderCallback = nil
-        }
+        sendEvent(withName: "OTPlessSignResult", body: params)
     }
     
     override func supportedEvents() -> [String]! {
@@ -29,47 +26,86 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate {
     
     @objc(startOtplessWithEvent)
     func startOtplessWithEvent() {
-        isFromEvent = true
-        let viewController = UIApplication.shared.delegate?.window??.rootViewController;
         Otpless.sharedInstance.delegate = self
-        Otpless.sharedInstance.start(vc: viewController!)
+        runOnMain {
+            let viewController = UIApplication.shared.delegate?.window??.rootViewController;
+            Otpless.sharedInstance.start(vc: viewController!)
+        }
     }
     
     @objc(startOtplessWithEventParams:)
     func startOtplessWithEventParams(param: [String : Any]?) {
-        isFromEvent = true
-        let viewController = UIApplication.shared.delegate?.window??.rootViewController;
         Otpless.sharedInstance.delegate = self
-        DispatchQueue.main.async {
+        runOnMain {
+            let viewController = UIApplication.shared.delegate?.window??.rootViewController;
             Otpless.sharedInstance.startwithParams(vc: viewController!, params: param)
         }
     }
     
     @objc(startOtplessWithCallback:)
     func startOtplessWithCallback(callback: @escaping RCTResponseSenderBlock) {
-        isFromEvent = false
-        self.responseSenderCallback = callback
-        let viewController = UIApplication.shared.delegate?.window??.rootViewController;
-        Otpless.sharedInstance.delegate = self
-        Otpless.sharedInstance.start(vc: viewController!)
+        self.rctCallbackWrapper = RCTSenderWrapper(callback: callback)
+        Otpless.sharedInstance.delegate = self.rctCallbackWrapper
+        runOnMain {
+            Otpless.sharedInstance.shouldHideButton(hide: true)
+            let viewController = UIApplication.shared.delegate?.window??.rootViewController;
+            Otpless.sharedInstance.start(vc: viewController!)
+        }
     }
     
     @objc(startOtplessWithCallbackParams:withCallback:)
     func startOtplessWithCallbackParams(param: [String : Any]?, callback: @escaping RCTResponseSenderBlock) {
-        isFromEvent = false
-        self.responseSenderCallback = callback
-        let viewController = UIApplication.shared.delegate?.window??.rootViewController;
-        Otpless.sharedInstance.delegate = self
-        Otpless.sharedInstance.startwithParams(vc: viewController!, params: param)
+        self.rctCallbackWrapper = RCTSenderWrapper(callback: callback)
+        Otpless.sharedInstance.delegate = self.rctCallbackWrapper
+        runOnMain {
+            Otpless.sharedInstance.shouldHideButton(hide: true)
+            let viewController = UIApplication.shared.delegate?.window??.rootViewController;
+            Otpless.sharedInstance.startwithParams(vc: viewController!, params: param)
+        }
     }
     
     @objc(onSignInCompleted)
     func onSignInCompleted() {
-        Otpless.sharedInstance.onSignedInComplete()
+        runOnMain {
+            Otpless.sharedInstance.onSignedInComplete()
+        }
     }
     
     @objc(showFabButton:)
     func showFabButton(isShowFab: Bool) {
-        Otpless.sharedInstance.shouldHideButton(hide: isShowFab)
+        Otpless.sharedInstance.shouldHideButton(hide: !isShowFab)
+    }
+}
+
+extension OtplessReactNative {
+    func runOnMain(callback: @escaping (() -> Void)) {
+        DispatchQueue.main.async {
+            callback()
+        }
+    }
+}
+
+class RCTSenderWrapper: onResponseDelegate {
+    private let callback:RCTResponseSenderBlock
+    private var isCallbackUsed = false
+    
+    init(callback: @escaping RCTResponseSenderBlock) {
+        self.callback = callback
+    }
+    
+    func onResponse(response: OtplessSDK.OtplessResponse?) {
+        if (isCallbackUsed) {
+            return
+        }
+        var params = [String: Any]()
+        if (response != nil && response?.errorString != nil){
+            params["errorMessage"] = response?.errorString
+        } else {
+            if response != nil && response?.responseData != nil {
+                params["data"] =  response!.responseData!
+            }
+        }
+        self.callback([params])
+        isCallbackUsed = true
     }
 }
