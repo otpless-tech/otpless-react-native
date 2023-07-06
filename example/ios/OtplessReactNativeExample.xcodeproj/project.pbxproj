@@ -14,6 +14,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-OtplessReactNativeExample-OtplessReactNativeExampleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-OtplessReactNativeExample-OtplessReactNativeExampleTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		C252F6D82A56C5FB00FCB5FC /* Connector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C252F6D72A56C5FB00FCB5FC /* Connector.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,8 @@
 		5DCACB8F33CDC322A6C60F78 /* libPods-OtplessReactNativeExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OtplessReactNativeExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = OtplessReactNativeExample/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-OtplessReactNativeExample-OtplessReactNativeExampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OtplessReactNativeExample-OtplessReactNativeExampleTests.release.xcconfig"; path = "Target Support Files/Pods-OtplessReactNativeExample-OtplessReactNativeExampleTests/Pods-OtplessReactNativeExample-OtplessReactNativeExampleTests.release.xcconfig"; sourceTree = "<group>"; };
+		C252F6D62A56C5FB00FCB5FC /* OtplessReactNativeExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OtplessReactNativeExample-Bridging-Header.h"; sourceTree = "<group>"; };
+		C252F6D72A56C5FB00FCB5FC /* Connector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connector.swift; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -92,6 +95,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				C252F6D72A56C5FB00FCB5FC /* Connector.swift */,
+				C252F6D62A56C5FB00FCB5FC /* OtplessReactNativeExample-Bridging-Header.h */,
 			);
 			name = OtplessReactNativeExample;
 			sourceTree = "<group>";
@@ -207,7 +212,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1420;
 					};
 				};
 			};
@@ -412,6 +417,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C252F6D82A56C5FB00FCB5FC /* Connector.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -432,7 +438,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-OtplessReactNativeExample-OtplessReactNativeExampleTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEFINES_MODULE = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -459,8 +467,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-OtplessReactNativeExample-OtplessReactNativeExampleTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = OtplessReactNativeExampleTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -501,6 +511,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.digvijayanubhav.app;
 				PRODUCT_NAME = OtplessReactNativeExample;
+				SWIFT_OBJC_BRIDGING_HEADER = "OtplessReactNativeExample-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -528,6 +539,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.digvijayanubhav.app;
 				PRODUCT_NAME = OtplessReactNativeExample;
+				SWIFT_OBJC_BRIDGING_HEADER = "OtplessReactNativeExample-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
