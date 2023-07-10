@@ -13,8 +13,4 @@ class Connector: NSObject {
   @objc static func callOtpless(_ link: URL) {
     Otpless.sharedInstance.processOtplessDeeplink(url: link)
   }
-  
-  @objc static func callPrint() {
-    print("Hello i am in swift class called from objective c")
-  }
 }

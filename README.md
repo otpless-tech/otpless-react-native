@@ -38,9 +38,6 @@ eventModule.clearListener()
 // if sign-in fab button is not needed. default it is true.
 eventModule.showFabButton(false)
 
-// ...
-
-const result = await multiply(3, 7);
 ```
 
 ## Contributing
