@@ -1,6 +1,7 @@
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>
+#import "OtplessReactNativeExample-Swift.h"
 
 @implementation AppDelegate
 
@@ -10,8 +11,13 @@
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
-
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
+}
+
+- (BOOL) application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+  [super application:app openURL:url options:options];
+  [Connector callOtpless: url];
+  return true;
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
