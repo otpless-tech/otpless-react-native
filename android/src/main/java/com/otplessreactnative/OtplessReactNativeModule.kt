@@ -1,7 +1,5 @@
 package com.otplessreactnative
 
-import android.app.Activity
-import androidx.activity.ComponentActivity
 import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -9,7 +7,8 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.otpless.dto.OtplessResponse
-import com.otpless.views.OtplessManager
+import com.otpless.main.OtplessManager
+import com.otpless.main.OtplessView
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -22,9 +21,28 @@ import org.json.JSONObject
  *
  * @property showFabButton if you want to show the fab button, after coming back to your login screen.
  * @property onSignInCompleted to be called with sign of user is completed and it hides the button.
+ *
+ * @property showOtplessLoginPage to show otpless login page without params
+ * @property showOtplessLoginPageWithParams to show otpless login page with params
  * */
 class OtplessReactNativeModule(private val reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
+
+  private var _otplessView: OtplessView? = null
+
+  @get:Synchronized
+  internal val otplessView: OtplessView?
+    get() {
+      if (_otplessView == null) {
+        if (currentActivity == null) return null
+        _otplessView = OtplessManager.getInstance().getOtplessView(currentActivity)
+      }
+      return _otplessView
+    }
+
+  init {
+    OtplessReactNativeManager.registerOtplessModule(this)
+  }
 
   override fun getName(): String {
     return NAME
@@ -32,7 +50,10 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
 
   @ReactMethod
   fun startOtplessWithEvent() {
-    OtplessManager.getInstance().start(this::sendEventCallback)
+    reactContext.currentActivity!!.runOnUiThread {
+      otplessView!!.setCallback(this::sendEventCallback, null)
+      otplessView!!.startOtpless()
+    }
   }
 
   /**
@@ -43,7 +64,9 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
     val jsonObj = convertMapToJson(data) ?: return kotlin.run {
       startOtplessWithEvent()
     }
-    OtplessManager.getInstance().start(this::sendEventCallback, jsonObj)
+    reactContext.currentActivity!!.runOnUiThread {
+      otplessView!!.startOtpless(jsonObj, this::sendEventCallback)
+    }
   }
 
   private fun sendEventCallback(result: OtplessResponse) {
@@ -69,9 +92,12 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
 
   @ReactMethod
   fun startOtplessWithCallback(callback: Callback) {
-    OtplessManager.getInstance().showFabButton(false)
-    OtplessManager.getInstance().start { result: OtplessResponse ->
+    otplessView!!.showOtplessFab(false)
+    otplessView!!.setCallback({ result: OtplessResponse ->
       sendSingleCallback(callback, result)
+    }, null)
+    reactContext.currentActivity!!.runOnUiThread {
+      otplessView!!.startOtpless()
     }
   }
 
@@ -92,27 +118,47 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
     val jsonObject = convertMapToJson(data) ?: return kotlin.run {
       startOtplessWithCallback(callback)
     }
-    OtplessManager.getInstance().showFabButton(false)
-    OtplessManager.getInstance().start(
-      {
-        sendSingleCallback(callback, it)
-      }, jsonObject
-    )
+    otplessView!!.showOtplessFab(false)
+    reactContext.currentActivity!!.runOnUiThread {
+      otplessView!!.startOtpless(jsonObject, this::sendEventCallback)
+    }
   }
 
   @ReactMethod
   fun onSignInCompleted() {
-    val activity: Activity = reactContext.currentActivity ?: return
-    activity.runOnUiThread { OtplessManager.getInstance().onSignInCompleted() }
+    reactContext.currentActivity!!.runOnUiThread {
+      otplessView!!.onSignInCompleted()
+    }
   }
 
   @ReactMethod
   fun showFabButton(isShowFab: Boolean) {
-    OtplessManager.getInstance().showFabButton(isShowFab)
+    otplessView!!.showOtplessFab(isShowFab)
+  }
+
+  @ReactMethod
+  fun showOtplessLoginPage(callback: Callback) {
+    otplessView!!.setCallback({ result: OtplessResponse ->
+      sendSingleCallback(callback, result)
+    }, null, true)
+    reactContext.currentActivity!!.runOnUiThread {
+      otplessView!!.showOtplessLoginPage()
+    }
+  }
+
+  @ReactMethod
+  fun showOtplessLoginPageWithParams(data: ReadableMap, callback: Callback) {
+    val jsonObject = convertMapToJson(data) ?: return kotlin.run {
+      showOtplessLoginPage(callback)
+    }
+    reactContext.currentActivity!!.runOnUiThread {
+      otplessView!!.showOtplessLoginPage(jsonObject) { result: OtplessResponse ->
+        sendSingleCallback(callback, result)
+      }
+    }
   }
 
   companion object {
     const val NAME = "OtplessReactNative"
-
   }
 }

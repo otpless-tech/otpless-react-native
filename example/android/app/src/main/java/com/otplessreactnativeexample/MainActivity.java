@@ -1,9 +1,11 @@
 package com.otplessreactnativeexample;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
+import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
 import com.otplessreactnative.OtplessReactNativeManager;
@@ -14,7 +16,6 @@ public class MainActivity extends ReactActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    OtplessReactNativeManager.INSTANCE.initOtpless(this);
   }
 
   /**
@@ -41,5 +42,17 @@ public class MainActivity extends ReactActivity {
         // If you opted-in for the New Architecture, we enable Concurrent React (i.e. React 18).
         DefaultNewArchitectureEntryPoint.getConcurrentReactEnabled() // concurrentRootEnabled
         );
+  }
+
+  @Override
+  public void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    OtplessReactNativeManager.INSTANCE.onNewIntent(intent);
+  }
+
+  @Override
+  public void onBackPressed() {
+    if (OtplessReactNativeManager.INSTANCE.onBackPressed()) return;
+    super.onBackPressed();
   }
 }

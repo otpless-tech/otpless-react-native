@@ -60,6 +60,14 @@ export default function App() {
     module.startWithParams(createParams(), handleResult);
   };
 
+  const loginPage = () => {
+    module.showLoginPage(handleResult)
+  }
+
+  const loginPageWithParams = () => {
+    module.showLoginPageWithParams(createParams(), handleResult)
+  }
+
   const createParams = () => {
     const params = {
       method: 'get',
@@ -94,6 +102,20 @@ export default function App() {
         <Button
           title="Open OTP-less With Event"
           onPress={() => startEventWithParams()}
+        />
+      </View>
+
+      <View style={styles.otplessButtonContainer}>
+        <Button
+          title="Open OTP-less Login Page"
+          onPress={() => loginPage()}
+        />
+      </View>
+
+      <View style={styles.otplessButtonContainer}>
+        <Button
+          title="Open OTP-less Login Page With Params"
+          onPress={() => loginPageWithParams()}
         />
       </View>
 
