@@ -61,12 +61,12 @@ export default function App() {
   };
 
   const loginPage = () => {
-    module.showLoginPage(handleResult)
-  }
+    module.showLoginPage(handleResult);
+  };
 
   const loginPageWithParams = () => {
-    module.showLoginPageWithParams(createParams(), handleResult)
-  }
+    module.showLoginPageWithParams(createParams(), handleResult);
+  };
 
   const createParams = () => {
     const params = {
@@ -106,10 +106,7 @@ export default function App() {
       </View>
 
       <View style={styles.otplessButtonContainer}>
-        <Button
-          title="Open OTP-less Login Page"
-          onPress={() => loginPage()}
-        />
+        <Button title="Open OTP-less Login Page" onPress={() => loginPage()} />
       </View>
 
       <View style={styles.otplessButtonContainer}>
