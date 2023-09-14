@@ -7,7 +7,7 @@ RCT_EXTERN_METHOD(startOtplessWithEvent)
 
 RCT_EXTERN_METHOD(onSignInCompleted)
 
-RCT_EXTERN_METHOD(showFabButton:(bool)isShowFab)
+RCT_EXTERN_METHOD(showFabButton:(BOOL)isShowFab)
 
 RCT_EXTERN_METHOD(startOtplessWithEventParams:(NSDictionary *)param)
 
