@@ -18,6 +18,7 @@ export default function App() {
   const eventModule = new OtplessEventModule((result: any) => {
     handleResult(result);
   });
+  // eventModule.showFabButton(true);
 
   const module = new OtplessModule();
 
