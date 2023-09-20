@@ -75,6 +75,21 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate {
     func showFabButton(isShowFab: Bool) {
         Otpless.sharedInstance.shouldHideButton(hide: !isShowFab)
     }
+    
+    @objc(showOtplessLoginPage:withCallback:)
+    func showOtplessLoginPage(param: [String: Any]?, callback: @escaping RCTResponseSenderBlock) {
+        self.rctCallbackWrapper = RCTSenderWrapper(callback: callback)
+        Otpless.sharedInstance.delegate = self.rctCallbackWrapper
+        runOnMain {
+            Otpless.sharedInstance.shouldHideButton(hide: true)
+            let viewController = UIApplication.shared.delegate?.window??.rootViewController;
+            if let validParam = param {
+                Otpless.sharedInstance.showOtplessLoginPageWithParams(vc: viewController!, params: validParam)
+            } else {
+                Otpless.sharedInstance.showOtplessLoginPage(vc: viewController!)
+            }
+        }
+    }
 }
 
 extension OtplessReactNative {

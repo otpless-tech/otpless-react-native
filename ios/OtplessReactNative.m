@@ -16,6 +16,8 @@ RCT_EXTERN_METHOD(startOtplessWithCallback:(RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(startOtplessWithCallbackParams:(NSDictionary *)param
                   withCallback: (RCTResponseSenderBlock)callback)
 
+RCT_EXTERN_METHOD(showOtplessLoginPage:(NSDictionary *)param
+                  withCallback: (RCTResponseSenderBlock)callback)
 
 @end
 
