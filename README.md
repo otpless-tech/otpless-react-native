@@ -1,53 +1,16 @@
-# otpless-react-native
+<p align="center">
+  <img src="https://github.com/otpless-tech/Otpless-iOS-SDK/blob/main/otpless.svg" height="80"/>
+</p>
 
-otpless react module for android and ios
+# OTPLESS react native SDK
+[![npm version](https://badge.fury.io/js/otpless-react-native.svg)](https://badge.fury.io/js/otpless-react-native)
+[![npm downloads](https://img.shields.io/npm/dm/otpless-react-native.svg)](https://www.npmjs.com/package/otpless-react-native)
+
 
 ## Installation
 
-```sh
-npm install otpless-react-native
-```
+You can checkout the complete [installation guide here](https://otpless.com/platforms/react-native)
 
-## Usage
+## Author
 
-```js
-import { OtplessEventModule, OtplessModule } from 'otpless-react-native';
-
-// create otpless event module
-const eventModule = new OtplessEventModule((result: any) => {
-    let message: string = '';
-    if (data.data === null || data.data === undefined) {
-      message = data.errorMessage;
-    } else {
-      message = `token: ${data.data.token}`;
-      // todo here
-    }
-  });
-
-// to start the sdk
-eventModule.start();
-
-// after sign in completed
-eventModule.onSignInCompleted();
-
-
-// to remove all callbacks
-eventModule.clearListener()
-
-// optional
-// if sign-in fab button is not needed. default it is true.
-eventModule.showFabButton(false)
-
-```
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+[OTPLESS](https://otpless.com), developer@otpless.com
