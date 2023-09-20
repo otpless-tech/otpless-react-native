@@ -66,7 +66,7 @@ export default function App() {
   };
 
   const loginPageWithParams = () => {
-    module.showLoginPageWithParams(createParams(), handleResult);
+    module.showLoginPage(handleResult, createParams());
   };
 
   const createParams = () => {

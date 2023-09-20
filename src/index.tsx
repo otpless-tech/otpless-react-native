@@ -67,14 +67,8 @@ class OtplessModule extends OtplessBaseModule {
     });
   }
 
-  showLoginPage(callback: OtplessResultCallback) {
-    OtplessReactNative.showOtplessLoginPage((result: any) => {
-      callback(result);
-    });
-  }
-
-  showLoginPageWithParams(input: any, callback: OtplessResultCallback) {
-    OtplessReactNative.showOtplessLoginPageWithParams(input, (result: any) => {
+  showLoginPage(callback: OtplessResultCallback, input: any | null = null) {
+    OtplessReactNative.showOtplessLoginPage(input, (result: any) => {
       callback(result);
     });
   }

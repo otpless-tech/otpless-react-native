@@ -137,20 +137,8 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
   }
 
   @ReactMethod
-  fun showOtplessLoginPage(callback: Callback) {
-    otplessView!!.setCallback({ result: OtplessResponse ->
-      sendSingleCallback(callback, result)
-    }, null, true)
-    reactContext.currentActivity!!.runOnUiThread {
-      otplessView!!.showOtplessLoginPage()
-    }
-  }
-
-  @ReactMethod
-  fun showOtplessLoginPageWithParams(data: ReadableMap, callback: Callback) {
-    val jsonObject = convertMapToJson(data) ?: return kotlin.run {
-      showOtplessLoginPage(callback)
-    }
+  fun showOtplessLoginPage(data: ReadableMap?, callback: Callback) {
+    val jsonObject = convertMapToJson(data)
     reactContext.currentActivity!!.runOnUiThread {
       otplessView!!.showOtplessLoginPage(jsonObject) { result: OtplessResponse ->
         sendSingleCallback(callback, result)
