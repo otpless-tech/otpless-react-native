@@ -69,6 +69,13 @@ export default function App() {
     module.showLoginPage(handleResult, createParams());
   };
 
+  const isWhatsappInstalled = () => {
+    module.isWhatsappInstalled((hasWhatsapp) => {
+      let message = 'Whatsapp installation status: ' + hasWhatsapp;
+      setOtplessResult(message);
+    });
+  };
+
   const createParams = () => {
     const params = {
       method: 'get',
@@ -121,6 +128,13 @@ export default function App() {
         <Button
           title="Call OTPLESS Complete"
           onPress={() => onSignInCompleted()}
+        />
+      </View>
+
+      <View style={styles.otplessButtonContainer}>
+        <Button
+          title="Is Whatsapp Installed"
+          onPress={() => isWhatsappInstalled()}
         />
       </View>
     </View>

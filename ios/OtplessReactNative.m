@@ -19,5 +19,7 @@ RCT_EXTERN_METHOD(startOtplessWithCallbackParams:(NSDictionary *)param
 RCT_EXTERN_METHOD(showOtplessLoginPage:(NSDictionary *)param
                   withCallback: (RCTResponseSenderBlock)callback)
 
+RCT_EXTERN_METHOD(isWhatsappInstalled:(RCTResponseSenderBlock)callback)
+
 @end
 
