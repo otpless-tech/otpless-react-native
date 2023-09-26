@@ -17,12 +17,22 @@ const OtplessReactNative = NativeModules.OtplessReactNative
       }
     );
 
+interface HasWhatsappCallback {
+  (hasWhatsapp: boolean): void;
+}
+
 class OtplessBaseModule {
   onSignInCompleted() {
     OtplessReactNative.onSignInCompleted();
   }
   showFabButton(isShowFab: boolean) {
     OtplessReactNative.showFabButton(isShowFab);
+  }
+  isWhatsappInstalled(callback: HasWhatsappCallback) {
+    OtplessReactNative.isWhatsappInstalled((result: any) => {
+      const hasWhatsapp = result.hasWhatsapp === true;
+      callback(hasWhatsapp);
+    });
   }
 }
 

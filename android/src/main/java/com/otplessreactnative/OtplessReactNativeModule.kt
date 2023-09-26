@@ -9,6 +9,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.otpless.dto.OtplessResponse
 import com.otpless.main.OtplessManager
 import com.otpless.main.OtplessView
+import com.otpless.utils.Utility
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -144,6 +145,15 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
         sendSingleCallback(callback, result)
       }
     }
+  }
+
+  @ReactMethod
+  fun isWhatsappInstalled(callback: Callback) {
+    val hasWhatsapp = Utility.isWhatsAppInstalled(reactContext)
+    val json = JSONObject().also {
+      it.put("hasWhatsapp", hasWhatsapp)
+    }
+    callback.invoke(convertJsonToMap(json))
   }
 
   companion object {
