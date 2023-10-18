@@ -121,7 +121,9 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
     }
     otplessView!!.showOtplessFab(false)
     reactContext.currentActivity!!.runOnUiThread {
-      otplessView!!.startOtpless(jsonObject, this::sendEventCallback)
+      otplessView!!.startOtpless(jsonObject) {
+        sendSingleCallback(callback, it)
+      }
     }
   }
 
