@@ -15,8 +15,8 @@
 }
 
 - (BOOL) application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+  if ([Connector loadUrl: url]) return true;
   [super application:app openURL:url options:options];
-  [Connector callOtpless: url];
   return true;
 }
 

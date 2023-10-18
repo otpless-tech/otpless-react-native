@@ -10,7 +10,12 @@ import OtplessSDK
 
 
 class Connector: NSObject {
-  @objc static func callOtpless(_ link: URL) {
-    Otpless.sharedInstance.processOtplessDeeplink(url: link)
-  }
+  
+  @objc public static func loadUrl(_ url: URL) -> Bool {
+    if Otpless.sharedInstance.isOtplessDeeplink(url: url) {
+      Otpless.sharedInstance.processOtplessDeeplink(url: url)
+      return true;
+    }
+    return false;
+   }
 }
