@@ -78,10 +78,10 @@ PODS:
   - hermes-engine/Pre-built (0.71.11)
   - libevent (2.1.12)
   - OpenSSL-Universal (1.1.1100)
-  - otpless-react-native (1.0.4):
-    - OtplessSDK (= 2.0.1)
+  - otpless-react-native (1.1.0):
+    - OtplessSDK (= 2.0.3)
     - React-Core
-  - OtplessSDK (2.0.1)
+  - OtplessSDK (2.0.3)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -595,8 +595,8 @@ SPEC CHECKSUMS:
   hermes-engine: 34c863b446d0135b85a6536fa5fd89f48196f848
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
-  otpless-react-native: c05aabd3f24de655a6be7d2984ad2596fb2aafee
-  OtplessSDK: b8bbd2e85bee4ebdadb7f5503dc8d596067cd84b
+  otpless-react-native: e9f9e85b6dd75f46dc10f5bc2b09e0386072eefc
+  OtplessSDK: 55c03c841b975fafdcdd6f64c8381c75e987ecbf
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: f6187ec763637e6a57f5728dd9a3bdabc6d6b4e0
   RCTTypeSafety: a01aca2dd3b27fa422d5239252ad38e54e958750
