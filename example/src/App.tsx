@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
 
 import { OtplessEventModule, OtplessModule } from 'otpless-react-native';
-import { Button, FlatList, StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 
-import Header, { FintechItem } from './components/Header';
+import Header from './components/Header';
 
 export default function App() {
-  const [items, _] = useState([
-    { id: 1, name: 'Paytm' },
-    { id: 2, name: 'PhonePe' },
-    { id: 3, name: 'GPay' },
-    { id: 4, name: 'Mobikwik' },
-    { id: 5, name: 'PayPal' },
-    { id: 6, name: 'BharatPe' },
-  ]);
+
 
   const eventModule = new OtplessEventModule((result: any) => {
     handleResult(result);
@@ -88,11 +81,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Header title="React Fintech List" />
-      <FlatList
-        data={items}
-        renderItem={({ item }) => <FintechItem name={item.name} />}
-      />
+      <Header title="Otpless RN Example" />
       {/* eslint-disable-next-line react-native/no-inline-styles */}
       <View style={{ padding: 24 }}>
         {/* eslint-disable-next-line react-native/no-inline-styles */}
