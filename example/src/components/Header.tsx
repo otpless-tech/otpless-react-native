@@ -9,14 +9,6 @@ const Header = ({ title }: { title: string }) => {
   );
 };
 
-const FintechItem = ({ name }: { name: string }) => {
-  return (
-    <View>
-      <Text style={styles.fintechText}>{name}</Text>
-    </View>
-  );
-};
-
 const styles = StyleSheet.create({
   header: {
     height: 60,
@@ -38,4 +30,3 @@ const styles = StyleSheet.create({
 });
 
 export default Header;
-export { FintechItem };
