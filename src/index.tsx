@@ -22,17 +22,15 @@ interface HasWhatsappCallback {
 }
 
 class OtplessBaseModule {
-  onSignInCompleted() {
-    OtplessReactNative.onSignInCompleted();
-  }
-  showFabButton(isShowFab: boolean) {
-    OtplessReactNative.showFabButton(isShowFab);
-  }
   isWhatsappInstalled(callback: HasWhatsappCallback) {
     OtplessReactNative.isWhatsappInstalled((result: any) => {
       const hasWhatsapp = result.hasWhatsapp === true;
       callback(hasWhatsapp);
     });
+  }
+
+  setLoaderVisibility(input: boolean) {
+    OtplessReactNative.setLoaderVisibility(input); 
   }
 }
 
@@ -51,37 +49,18 @@ class OtplessEventModule extends OtplessBaseModule {
     });
   }
 
-  start(input: any = null) {
-    if (input == null) {
-      OtplessReactNative.startOtplessWithEvent();
-    } else {
-      OtplessReactNative.startOtplessWithEventParams(input);
-    }
-  }
-
   clearListener() {
     this.eventEmitter.removeAllListeners;
   }
 }
 
 class OtplessModule extends OtplessBaseModule {
-  start(callback: OtplessResultCallback) {
-    OtplessReactNative.startOtplessWithCallback((result: any) => {
-      callback(result);
-    });
-  }
 
-  startWithParams(input: any, callback: OtplessResultCallback) {
-    OtplessReactNative.startOtplessWithCallbackParams(input, (result: any) => {
-      callback(result);
-    });
-  }
-
-  showLoginPage(callback: OtplessResultCallback, input: any | null = null) {
+  showLoginPage(callback: OtplessResultCallback, input: any) {
     OtplessReactNative.showOtplessLoginPage(input, (result: any) => {
       callback(result);
     });
   }
 }
 
-export { OtplessEventModule, OtplessModule };
+export { OtplessModule };
