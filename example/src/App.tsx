@@ -60,7 +60,7 @@ export default function App() {
 
       <View style={{ padding: 24 }}>
         {/* eslint-disable-next-line react-native/no-inline-styles */}
-        <Text>{result}</Text>
+        <Text style={{ padding: 24 }}>{result}</Text>
       </View>
 
     </View>
