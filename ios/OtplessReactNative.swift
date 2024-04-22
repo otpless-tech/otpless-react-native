@@ -44,7 +44,7 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate {
     @objc(isWhatsappInstalled:)
     func isWhatsappInstalled(callback: RCTResponseSenderBlock) {
         let hasWhatsapp = Otpless.sharedInstance.isWhatsappInstalled()
-        let params = [hasWhatsapp: hasWhatsapp]
+        let params = ["hasWhatsapp": hasWhatsapp]
         callback([params])
     }
 }
@@ -74,7 +74,10 @@ class RCTSenderWrapper: onResponseDelegate {
             params["errorMessage"] = response?.errorString
         } else {
             if response != nil && response?.responseData != nil {
-                params["data"] =  response!.responseData!
+                let responseData = response!.responseData!
+                self.callback([responseData])
+                isCallbackUsed = true
+                return
             }
         }
         self.callback([params])
