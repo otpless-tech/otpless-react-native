@@ -18,7 +18,7 @@ export default function App() {
 
   const loginPage = () => {
     let request = {
-      appId: "YYTFDI0602X3O5T5SIS5"
+      appId: "APP_ID"
     }
     module.showLoginPage(handleResult, request);
   };
