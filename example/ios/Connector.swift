@@ -5,12 +5,14 @@
 //  Created by Digvijay Singh on 06/07/23.
 //
 
-import Foundation
 import OtplessSDK
-
+import Foundation
 
 class Connector: NSObject {
-  @objc static func callOtpless(_ link: URL) {
-    Otpless.sharedInstance.processOtplessDeeplink(url: link)
+  @objc public static func loadUrl(_ url: NSURL) {
+  Otpless.sharedInstance.processOtplessDeeplink(url: url as URL)
+  }
+  @objc public static func isOtplessDeeplink(_ url: NSURL) -> Bool {
+  return Otpless.sharedInstance.isOtplessDeeplink(url: url as URL)
   }
 }

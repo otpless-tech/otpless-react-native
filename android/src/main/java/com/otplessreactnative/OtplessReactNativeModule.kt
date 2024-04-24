@@ -6,6 +6,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.otpless.dto.OtplessRequest
 import com.otpless.dto.OtplessResponse
 import com.otpless.main.OtplessManager
 import com.otpless.main.OtplessView
@@ -14,17 +15,9 @@ import org.json.JSONException
 import org.json.JSONObject
 
 /**
- * @property startOtplessWithEvent to start otpless without params, with multiple callbacks
- * @property startOtplessWithEventParams to start otpless with params, with multiple callbacks
- *
- * @property startOtplessWithCallback to start otpless without params, with single callback
- * @property startOtplessWithCallbackParams to start otpless with params, with single callback
- *
- * @property showFabButton if you want to show the fab button, after coming back to your login screen.
- * @property onSignInCompleted to be called with sign of user is completed and it hides the button.
- *
  * @property showOtplessLoginPage to show otpless login page without params
- * @property showOtplessLoginPageWithParams to show otpless login page with params
+ * @property setLoaderVisibility to make native side loader visible and invisible
+ * @property isWhatsappInstalled to check if whatsapp is installed in app or not
  * */
 class OtplessReactNativeModule(private val reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext) {
@@ -49,27 +42,6 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
     return NAME
   }
 
-  @ReactMethod
-  fun startOtplessWithEvent() {
-    reactContext.currentActivity!!.runOnUiThread {
-      otplessView!!.setCallback(this::sendEventCallback, null)
-      otplessView!!.startOtpless()
-    }
-  }
-
-  /**
-   * to start otpless with parameters with multiple callbacks
-   * */
-  @ReactMethod
-  fun startOtplessWithEventParams(data: ReadableMap) {
-    val jsonObj = convertMapToJson(data) ?: return kotlin.run {
-      startOtplessWithEvent()
-    }
-    reactContext.currentActivity!!.runOnUiThread {
-      otplessView!!.startOtpless(jsonObj, this::sendEventCallback)
-    }
-  }
-
   private fun sendEventCallback(result: OtplessResponse) {
     fun sendResultEvent(result: JSONObject) {
       try {
@@ -91,17 +63,6 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
     sendResultEvent(jsonObject)
   }
 
-  @ReactMethod
-  fun startOtplessWithCallback(callback: Callback) {
-    otplessView!!.showOtplessFab(false)
-    otplessView!!.setCallback({ result: OtplessResponse ->
-      sendSingleCallback(callback, result)
-    }, null)
-    reactContext.currentActivity!!.runOnUiThread {
-      otplessView!!.startOtpless()
-    }
-  }
-
   private fun sendSingleCallback(callback: Callback, result: OtplessResponse) {
     val jsonObject = JSONObject()
     try {
@@ -115,35 +76,25 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
   }
 
   @ReactMethod
-  fun startOtplessWithCallbackParams(data: ReadableMap, callback: Callback) {
-    val jsonObject = convertMapToJson(data) ?: return kotlin.run {
-      startOtplessWithCallback(callback)
-    }
-    otplessView!!.showOtplessFab(false)
-    reactContext.currentActivity!!.runOnUiThread {
-      otplessView!!.startOtpless(jsonObject) {
-        sendSingleCallback(callback, it)
+  fun showOtplessLoginPage(data: ReadableMap, callback: Callback) {
+    val appId = data.getString("appId")!!
+    val request = OtplessRequest(appId)
+    data.getMap("params")?.let { params ->
+      params.getString("uxmode")?.let { uxmode ->
+        request.setUxmode(uxmode)
+      }
+      params.getString("locale")?.let { locale ->
+        request.setUxmode(locale)
+      }
+      val iterator = params.keySetIterator()
+      while (iterator.hasNextKey()) {
+        val key = iterator.nextKey() ?: break
+        val value = params.getString(key) ?: continue
+        request.addExtras(key, value)
       }
     }
-  }
-
-  @ReactMethod
-  fun onSignInCompleted() {
     reactContext.currentActivity!!.runOnUiThread {
-      otplessView!!.onSignInCompleted()
-    }
-  }
-
-  @ReactMethod
-  fun showFabButton(isShowFab: Boolean) {
-    otplessView!!.showOtplessFab(isShowFab)
-  }
-
-  @ReactMethod
-  fun showOtplessLoginPage(data: ReadableMap?, callback: Callback) {
-    val jsonObject = convertMapToJson(data)
-    reactContext.currentActivity!!.runOnUiThread {
-      otplessView!!.showOtplessLoginPage(jsonObject) { result: OtplessResponse ->
+      otplessView!!.showOtplessLoginPage(request) { result: OtplessResponse ->
         sendSingleCallback(callback, result)
       }
     }
@@ -156,6 +107,11 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
       it.put("hasWhatsapp", hasWhatsapp)
     }
     callback.invoke(convertJsonToMap(json))
+  }
+
+  @ReactMethod
+  fun setLoaderVisibility(isVisible: Boolean) {
+    otplessView!!.setLoaderVisibility(isVisible)
   }
 
   companion object {

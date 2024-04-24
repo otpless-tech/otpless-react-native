@@ -1,65 +1,26 @@
 import React, { useState } from 'react';
 
-import { OtplessEventModule, OtplessModule } from 'otpless-react-native';
+import { OtplessModule } from 'otpless-react-native';
 import { Button, StyleSheet, Text, View } from 'react-native';
 
 import Header from './components/Header';
 
 export default function App() {
 
-
-  const eventModule = new OtplessEventModule((result: any) => {
-    handleResult(result);
-  });
-  // eventModule.showFabButton(true);
-
   const module = new OtplessModule();
 
   const [result, setOtplessResult] = useState('Result from OTPESS');
-
-  // to get onetime callback
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  const _handleButtonPress = () => {
-    console.log(OtplessModule);
-    module.start(handleResult);
-  };
-  /* eslint-enable @typescript-eslint/no-unused-vars */
-
+  var loaderVisibility = true;
+  
   const handleResult = (data: any) => {
-    let message: string = '';
-    if (data.data === null || data.data === undefined) {
-      message = data.errorMessage;
-    } else {
-      message = `token: ${data.data.token}`;
-      // todo here
-    }
-    setOtplessResult(message);
-  };
-
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  const _handleButtonPressEvent = () => {
-    eventModule.start();
-  };
-  /* eslint-enable @typescript-eslint/no-unused-vars */
-
-  const onSignInCompleted = () => {
-    eventModule.onSignInCompleted();
-  };
-
-  const startEventWithParams = () => {
-    eventModule.start(createParams());
-  };
-
-  const startCallbackWithParams = () => {
-    module.startWithParams(createParams(), handleResult);
+    setOtplessResult(JSON.stringify(data));
   };
 
   const loginPage = () => {
-    module.showLoginPage(handleResult);
-  };
-
-  const loginPageWithParams = () => {
-    module.showLoginPage(handleResult, createParams());
+    let request = {
+      appId: "APP_ID"
+    }
+    module.showLoginPage(handleResult, request);
   };
 
   const isWhatsappInstalled = () => {
@@ -69,56 +30,19 @@ export default function App() {
     });
   };
 
-  const createParams = () => {
-    const params = {
-      method: 'get',
-      params: {
-        uxmode: 'autoclick',
-      },
-    };
-    return params;
-  };
+  const toggleLoaderVisibility = () => {
+    loaderVisibility = !loaderVisibility;
+    module.setLoaderVisibility(loaderVisibility);
+  }
 
   return (
     <View style={styles.container}>
       <Header title="Otpless RN Example" />
-      {/* eslint-disable-next-line react-native/no-inline-styles */}
-      <View style={{ padding: 24 }}>
-        {/* eslint-disable-next-line react-native/no-inline-styles */}
-        <Text style={{ padding: 24 }}>{result}</Text>
-      </View>
-
-      <View style={styles.otplessButtonContainer}>
-        <Button
-          title="Open OTP-less SDK"
-          onPress={() => startCallbackWithParams()}
-        />
-      </View>
-
-      <View style={styles.otplessButtonContainer}>
-        <Button
-          title="Open OTP-less With Event"
-          onPress={() => startEventWithParams()}
-        />
-      </View>
 
       <View style={styles.otplessButtonContainer}>
         <Button title="Open OTP-less Login Page" onPress={() => loginPage()} />
       </View>
 
-      <View style={styles.otplessButtonContainer}>
-        <Button
-          title="Open OTP-less Login Page With Params"
-          onPress={() => loginPageWithParams()}
-        />
-      </View>
-
-      <View style={styles.otplessButtonContainer}>
-        <Button
-          title="Call OTPLESS Complete"
-          onPress={() => onSignInCompleted()}
-        />
-      </View>
 
       <View style={styles.otplessButtonContainer}>
         <Button
@@ -126,6 +50,19 @@ export default function App() {
           onPress={() => isWhatsappInstalled()}
         />
       </View>
+
+      <View style={styles.otplessButtonContainer}>
+        <Button
+          title="Toggle Loader Visibility"
+          onPress={() => toggleLoaderVisibility()}
+        />
+      </View>
+
+      <View style={{ padding: 24 }}>
+        {/* eslint-disable-next-line react-native/no-inline-styles */}
+        <Text style={{ padding: 24 }}>{result}</Text>
+      </View>
+
     </View>
   );
 }
@@ -141,7 +78,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   otplessButtonContainer: {
-    paddingBottom: 16,
+    paddingTop: 8,
+    paddingBottom: 8,
     paddingStart: 24,
     paddingEnd: 24,
   },
