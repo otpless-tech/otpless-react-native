@@ -6,6 +6,8 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.otpless.dto.HeadlessRequest
+import com.otpless.dto.HeadlessResponse
 import com.otpless.dto.OtplessRequest
 import com.otpless.dto.OtplessResponse
 import com.otpless.main.OtplessManager
@@ -42,12 +44,12 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
     return NAME
   }
 
-  private fun sendEventCallback(result: OtplessResponse) {
+  private fun sendHeadlessEventCallback(result: HeadlessResponse) {
     fun sendResultEvent(result: JSONObject) {
       try {
         val map = convertJsonToMap(result)
         this.reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-          .emit("OTPlessSignResult", map)
+          .emit("OTPlessEventResult", map)
       } catch (e: JSONException) {
         throw RuntimeException(e)
       }
@@ -55,8 +57,9 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
 
     val jsonObject = JSONObject()
     try {
-      jsonObject.put("errorMessage", result.errorMessage)
-      jsonObject.put("data", result.data)
+      jsonObject.put("responseType", result.responseType)
+      jsonObject.put("response", result.response)
+      jsonObject.put("statusCode", result.statusCode)
     } catch (e: JSONException) {
       throw RuntimeException(e)
     }
@@ -112,6 +115,57 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
   @ReactMethod
   fun setLoaderVisibility(isVisible: Boolean) {
     otplessView!!.setLoaderVisibility(isVisible)
+  }
+
+  @ReactMethod
+  fun initHeadless(appId: String) {
+    reactContext.currentActivity!!.runOnUiThread {
+      otplessView!!.initHeadless(appId, null)
+    }
+  }
+
+  @ReactMethod
+  fun startHeadless(data: ReadableMap) {
+    val headlessRequest = HeadlessRequest()
+    val phone = data.getString("phone") ?: ""
+    // phone number authentication
+    if (phone.isNotEmpty()) {
+      val countryCode = data.getString("countryCode") ?: ""
+      headlessRequest.setPhoneNumber(countryCode, phone)
+      data.getString("otp")?.let {
+        headlessRequest.setOtp(it)
+      }
+    } else {
+      // email authentication
+      val email = data.getString("email") ?: ""
+      if (email.isNotEmpty()) {
+        headlessRequest.setEmail(email)
+        data.getString("otp")?.let {
+          headlessRequest.setOtp(it)
+        }
+      } else {
+        // oauth case
+        headlessRequest.setChannelType(data.getString("channelType") ?: "")
+      }
+    }
+    reactContext.currentActivity!!.runOnUiThread {
+      otplessView!!.startHeadless(headlessRequest, this::sendHeadlessEventCallback)
+    }
+  }
+
+  @ReactMethod
+  fun setHeadlessCallback() {
+    otplessView!!.setHeadlessCallback(this::sendHeadlessEventCallback)
+  }
+
+  @ReactMethod
+  fun setWebViewInspectable(isInspectable: Boolean) {
+    // empty method implementation for ios
+  }
+
+  @ReactMethod
+  fun enableOneTap(enable: Boolean) {
+    otplessView!!.enableOneTap(enable)
   }
 
   companion object {

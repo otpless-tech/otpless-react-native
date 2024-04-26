@@ -9,13 +9,13 @@ const LINKING_ERROR =
 const OtplessReactNative = NativeModules.OtplessReactNative
   ? NativeModules.OtplessReactNative
   : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
+    {},
+    {
+      get() {
+        throw new Error(LINKING_ERROR);
+      },
+    }
+  );
 
 interface HasWhatsappCallback {
   (hasWhatsapp: boolean): void;
@@ -30,7 +30,15 @@ class OtplessBaseModule {
   }
 
   setLoaderVisibility(input: boolean) {
-    OtplessReactNative.setLoaderVisibility(input); 
+    OtplessReactNative.setLoaderVisibility(input);
+  }
+
+  setWebViewInspectable(isInspectable: boolean) {
+    OtplessReactNative.setWebViewInspectable(isInspectable)
+  }
+
+  enableOneTap(enable: boolean) {
+    OtplessReactNative.setWebViewInspectable(enable)
   }
 }
 
@@ -38,19 +46,34 @@ interface OtplessResultCallback {
   (result: any): void;
 }
 
-class OtplessEventModule extends OtplessBaseModule {
-  private eventEmitter: NativeEventEmitter;
+class OtplessHeadlessModule extends OtplessBaseModule {
+  private eventEmitter: NativeEventEmitter | null = null;
 
-  constructor(callback: OtplessResultCallback) {
+  constructor() {
     super();
-    this.eventEmitter = new NativeEventEmitter(OtplessReactNative);
-    this.eventEmitter.addListener('OTPlessSignResult', (result) => {
-      callback(result);
-    });
+    this.eventEmitter = null;
   }
 
   clearListener() {
-    this.eventEmitter.removeAllListeners;
+    this.eventEmitter?.removeAllListeners;
+  }
+
+  initHeadless(appId: String) {
+    if (this.eventEmitter == null) {
+      this.eventEmitter = new NativeEventEmitter(OtplessReactNative);
+    }
+    // call the native method
+    OtplessReactNative.initHeadless(appId);
+  }
+
+  setHeadlessCallback(callback: OtplessResultCallback) {
+    this.eventEmitter!!.addListener('OTPlessEventResult', callback);
+    // call the native method
+    OtplessReactNative.setHeadlessCallback()
+  }
+
+  startHeadless(input: any) {
+    OtplessReactNative.startHeadless(input);
   }
 }
 
@@ -63,4 +86,4 @@ class OtplessModule extends OtplessBaseModule {
   }
 }
 
-export { OtplessModule };
+export { OtplessModule, OtplessHeadlessModule };
