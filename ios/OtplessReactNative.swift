@@ -21,7 +21,7 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
     }
     
     override func supportedEvents() -> [String]! {
-        return ["OTPlessSignResult"]
+        return ["OTPlessEventResult"]
     }
     
     @objc(showFabButton:)
