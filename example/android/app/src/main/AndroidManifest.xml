@@ -26,7 +26,7 @@
           <category android:name="android.intent.category.BROWSABLE" />
           <data
             android:host="otpless"
-            android:scheme= "otpless.yytfdi0602x3o5t5sis5"/>
+            android:scheme= "otpless.5e62zcanetd9urnxpz80"/>
         </intent-filter>
       </activity>
     </application>

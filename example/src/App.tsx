@@ -16,11 +16,10 @@ export default function App() {
     countryCode: '',
     otp: '',
     channelType: '',
-    isWhatsApp: ''
   })
 
   useEffect(() => {
-    headlessModule.initHeadless("YYTFDI0602X3O5T5SIS5")
+    headlessModule.initHeadless("5E62ZCANETD9URNXPZ80")
     headlessModule.setHeadlessCallback(onHeadlessResult)
     return () => {
       headlessModule.clearListener();
@@ -36,15 +35,16 @@ export default function App() {
 
   const loginPage = () => {
     let request = {
-      appId: "APP_ID"
+      appId: "5E62ZCANETD9URNXPZ80"
     }
     module.showLoginPage(handleResult, request);
   };
 
   const isWhatsappInstalled = () => {
     module.isWhatsappInstalled((hasWhatsapp) => {
-      let message = 'Whatsapp installation status: ' + hasWhatsapp;
-      handleChange('isWhatsApp', message);
+      let message = "Whatsapp installation status: " + hasWhatsapp;
+      console.log(message);
+      handleChange('result', message);
     });
   };
 
@@ -91,8 +91,10 @@ export default function App() {
   }
 
   const onHeadlessResult = (data: any) => {
+    let dataStr = JSON.stringify(data);
     console.log("=====onHeadlessResult======")
-    handleChange('result', JSON.stringify(data));
+    console.log(dataStr)
+    handleChange('result', dataStr);
   }
 
   const handleChange = (fieldName: string, value: string) => {
