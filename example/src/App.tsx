@@ -19,7 +19,7 @@ export default function App() {
   })
 
   useEffect(() => {
-    headlessModule.initHeadless("5E62ZCANETD9URNXPZ80")
+    headlessModule.initHeadless("APP_ID")
     headlessModule.setHeadlessCallback(onHeadlessResult)
     return () => {
       headlessModule.clearListener();
@@ -35,7 +35,7 @@ export default function App() {
 
   const loginPage = () => {
     let request = {
-      appId: "5E62ZCANETD9URNXPZ80"
+      appId: "APP_ID"
     }
     module.showLoginPage(handleResult, request);
   };
