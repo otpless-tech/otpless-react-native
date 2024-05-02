@@ -2,7 +2,7 @@ import OtplessSDK
 
 
 @objc(OtplessReactNative)
-class OtplessReactNative: RCTEventEmitter, onResponseDelegate {
+class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessResponseDelegate {
     
     // get the callback for promise
     private var rctCallbackWrapper: RCTSenderWrapper? = nil
@@ -17,11 +17,11 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate {
                 params["data"] =  response!.responseData!
             }
         }
-        sendEvent(withName: "OTPlessSignResult", body: params)
+        sendEvent(withName: "OTPlessEventResult", body: params)
     }
     
     override func supportedEvents() -> [String]! {
-        return ["OTPlessSignResult"]
+        return ["OTPlessEventResult"]
     }
     
     @objc(showFabButton:)
@@ -46,6 +46,65 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate {
         let hasWhatsapp = Otpless.sharedInstance.isWhatsappInstalled()
         let params = ["hasWhatsapp": hasWhatsapp]
         callback([params])
+    }
+    
+    @objc(initHeadless:)
+    func initHeadless(appId: String) {
+        runOnMain {
+            let viewController = UIApplication.shared.delegate?.window??.rootViewController
+            Otpless.sharedInstance.initialise(vc: viewController!, appId: appId)
+        }
+    }
+    
+    @objc(setHeadlessCallback)
+    func setHeadlessCallback() {
+        Otpless.sharedInstance.headlessDelegate = self
+    }
+    
+    @objc(startHeadless:)
+    func startHeadless(request: [String: Any]) {
+        let headlessRequest = createHeadlessRequest(args: request)
+        runOnMain {
+            if let otp = request["otp"] {
+                Otpless.sharedInstance.verifyOTP(otp: otp as! String, headlessRequest: headlessRequest)
+            } else {
+                Otpless.sharedInstance.startHeadless(headlessRequest: headlessRequest)
+            }
+        }
+    }
+    
+    private func createHeadlessRequest(args: [String: Any]) -> HeadlessRequest {
+        let headlessRequest = HeadlessRequest()
+        if let phone = args["phone"] {
+            let countryCode: String = args["countryCode"] as! String
+            headlessRequest.setPhoneNumber(number: phone as! String, withCountryCode: countryCode)
+        } else if let email = args["email"] {
+            headlessRequest.setEmail(email as! String)
+        } else if let channelType = args["channelType"] {
+            headlessRequest.setChannelType(channelType as! String)
+        }
+        return headlessRequest
+    }
+    
+    @objc(setWebViewInspectable:)
+    func setWebViewInspectable(isInspectable: Bool) {
+        Otpless.sharedInstance.webviewInspectable = isInspectable
+    }
+    
+    @objc(enableOneTap:)
+    func enableOneTap(enable: Bool) {
+        Otpless.sharedInstance.setOneTapEnabled(enable)
+    }
+    
+    func onHeadlessResponse(response: HeadlessResponse?) {
+        if response == nil {
+            return
+        }
+        var params = [String: Any]()
+        params["response"] = response!.responseData
+        params["statusCode"] = response!.statusCode
+        params["responseType"] = response!.responseType
+        sendEvent(withName: "OTPlessEventResult", body: params)
     }
 }
 
