@@ -8,6 +8,7 @@
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
+      android:networkSecurityConfig="@xml/rn_network_config"
       android:theme="@style/AppTheme">
       <activity
         android:name=".MainActivity"
@@ -26,7 +27,7 @@
           <category android:name="android.intent.category.BROWSABLE" />
           <data
             android:host="otpless"
-            android:scheme= "otpless.app_id_in_lowercase"/>
+            android:scheme= "otpless.5e62zcanetd9urnxpz80"/>
         </intent-filter>
       </activity>
     </application>

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
 import { OtplessHeadlessModule, OtplessModule } from 'otpless-react-native';
-import { Button, StyleSheet, Text, View, TextInput } from 'react-native';
+import { Button, StyleSheet, Text, View, TextInput, Platform } from 'react-native';
 
 import Header from './components/Header';
 
 export default function App() {
 
   const module = new OtplessModule();
-  const headlessModule = new OtplessHeadlessModule()
+  const headlessModule = new OtplessHeadlessModule();
+  let isIosHeadlessInit = false;
 
   const[form, setForm] = useState({
     result: 'result view',
@@ -19,8 +20,12 @@ export default function App() {
   })
 
   useEffect(() => {
-    headlessModule.initHeadless("APP_ID")
-    headlessModule.setHeadlessCallback(onHeadlessResult)
+    if(Platform.OS == 'android') {
+      headlessModule.initHeadless("5E62ZCANETD9URNXPZ80")
+      headlessModule.setHeadlessCallback(onHeadlessResult)
+      console.log("Otpless: android headless init done")
+    }
+    headlessModule.setWebViewInspectable(true);
     return () => {
       headlessModule.clearListener();
     }
@@ -35,7 +40,7 @@ export default function App() {
 
   const loginPage = () => {
     let request = {
-      appId: "APP_ID"
+      appId: "5E62ZCANETD9URNXPZ80"
     }
     module.showLoginPage(handleResult, request);
   };
@@ -54,6 +59,13 @@ export default function App() {
   }
 
   const startHeadless = () => {
+    if(Platform.OS == 'ios' && !isIosHeadlessInit) {
+      headlessModule.initHeadless("5E62ZCANETD9URNXPZ80")
+      headlessModule.setHeadlessCallback(onHeadlessResult)
+      isIosHeadlessInit = true;
+      console.log("Otpless: ios headless init done and returning");
+      return
+    }
     let headlessRequest = {}
     let phoneNumber = form.phoneNumber;
     if (phoneNumber != null && phoneNumber.length != 0) {
