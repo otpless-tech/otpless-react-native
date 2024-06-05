@@ -11,6 +11,8 @@ export default function App() {
   const headlessModule = new OtplessHeadlessModule();
   let isIosHeadlessInit = false;
 
+  const appId = "APP_ID"
+
   const[form, setForm] = useState({
     result: 'result view',
     phoneNumber: '',
@@ -21,7 +23,7 @@ export default function App() {
 
   useEffect(() => {
     if(Platform.OS == 'android') {
-      headlessModule.initHeadless("5E62ZCANETD9URNXPZ80")
+      headlessModule.initHeadless(appId)
       headlessModule.setHeadlessCallback(onHeadlessResult)
       console.log("Otpless: android headless init done")
     }
@@ -40,7 +42,7 @@ export default function App() {
 
   const loginPage = () => {
     let request = {
-      appId: "5E62ZCANETD9URNXPZ80"
+      appId: appId
     }
     module.showLoginPage(handleResult, request);
   };
@@ -60,7 +62,7 @@ export default function App() {
 
   const startHeadless = () => {
     if(Platform.OS == 'ios' && !isIosHeadlessInit) {
-      headlessModule.initHeadless("5E62ZCANETD9URNXPZ80")
+      headlessModule.initHeadless(appId)
       headlessModule.setHeadlessCallback(onHeadlessResult)
       isIosHeadlessInit = true;
       console.log("Otpless: ios headless init done and returning");

@@ -29,7 +29,7 @@
 			<string>otpless</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>otpless.5e62zcanetd9urnxpz80</string>
+				<string>otpless.app_id_in_lowercase</string>
 			</array>
 		</dict>
 	</array>
