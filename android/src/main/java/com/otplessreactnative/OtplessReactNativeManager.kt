@@ -12,7 +12,7 @@ object OtplessReactNativeManager {
   }
 
   fun onNewIntent(intent: Intent?) {
-    wModule?.get()?.otplessView?.verifyIntent(intent)
+    wModule?.get()?.otplessView?.onNewIntent(intent)
   }
 
   fun onBackPressed(): Boolean {

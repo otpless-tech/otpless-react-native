@@ -120,7 +120,7 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
   @ReactMethod
   fun initHeadless(appId: String) {
     reactContext.currentActivity!!.runOnUiThread {
-      otplessView!!.initHeadless(appId, null)
+      otplessView!!.initHeadless(appId)
     }
   }
 
