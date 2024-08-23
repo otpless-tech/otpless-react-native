@@ -1,5 +1,8 @@
 package com.otplessreactnative
 
+import android.app.Activity
+import android.content.Intent
+import com.facebook.react.bridge.ActivityEventListener
 import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -22,7 +25,7 @@ import org.json.JSONObject
  * @property isWhatsappInstalled to check if whatsapp is installed in app or not
  * */
 class OtplessReactNativeModule(private val reactContext: ReactApplicationContext) :
-  ReactContextBaseJavaModule(reactContext) {
+  ReactContextBaseJavaModule(reactContext), ActivityEventListener {
 
   private var _otplessView: OtplessView? = null
 
@@ -38,6 +41,7 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
 
   init {
     OtplessReactNativeManager.registerOtplessModule(this)
+    reactContext.addActivityEventListener(this)
   }
 
   override fun getName(): String {
@@ -168,7 +172,31 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
     otplessView!!.enableOneTap(enable)
   }
 
+  @ReactMethod
+  fun enableDebugLogging(isEnabled: Boolean) {
+    Utility.debugLogging = isEnabled
+  }
+
   companion object {
     const val NAME = "OtplessReactNative"
+    private const val OTPLESS_WEBAUTHN_REGISTER_REQUEST_CODE = 9767357
+    private const val OTPLESS_WEBAUTHN_SIGNIN_REQUEST_CODE = 9767358
+  }
+
+  override fun onActivityResult(activity: Activity?, requestCode: Int, resultCode: Int, data: Intent?) {
+    if (!isOtplessRequestCode(requestCode) || otplessView == null) return
+    otplessView!!.onActivityResult(requestCode, resultCode, data)
+  }
+
+  override fun onNewIntent(p0: Intent?) {
+    // Intentionally left blank because we must override onNewIntent as we are implementing ActivityEventListener to use onActivityResult.
+  }
+
+  private fun isOtplessRequestCode(requestCode: Int): Boolean {
+    return when (requestCode) {
+      OTPLESS_WEBAUTHN_REGISTER_REQUEST_CODE -> true
+      OTPLESS_WEBAUTHN_SIGNIN_REQUEST_CODE -> true
+      else -> false
+    }
   }
 }

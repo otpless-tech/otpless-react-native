@@ -97,6 +97,15 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+
+        //region === web authin ===
+        resValue 'string', 'host', 'https://otpless.com'
+        resValue 'string', 'asset_statements', """
+           [{
+             "include": "https://otpless.com/.well-known/assetlinks.json"
+           }]
+        """
+        //endregion
     }
 
     splits {
@@ -114,6 +123,13 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+
+        release {
+          storeFile file("../../../../../signkeys/sparshreactnativesigning")
+          storePassword "9643519024"
+          keyAlias "sparsh"
+          keyPassword "9643519024"
+        }
     }
     buildTypes {
         debug {
@@ -122,7 +138,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

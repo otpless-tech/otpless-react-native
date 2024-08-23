@@ -95,6 +95,14 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
     func enableOneTap(enable: Bool) {
         Otpless.sharedInstance.setOneTapEnabled(enable)
     }
+  
+    @objc(enableDebugLogging:)
+    func enableDebugLogging(enable: Bool) {
+      if enable {
+        Otpless.sharedInstance.setLoggerDelegate(delegate: self)
+      }
+    }
+  
     
     func onHeadlessResponse(response: HeadlessResponse?) {
         if response == nil {
@@ -114,6 +122,12 @@ extension OtplessReactNative {
             callback()
         }
     }
+}
+
+extension OtplessReactNative: OtplessLoggerDelegate {
+  func otplessLog(string: String, type: String) {
+    print("Otpless Log of type : \(type)\n\n\(string)")
+  }
 }
 
 class RCTSenderWrapper: onResponseDelegate {

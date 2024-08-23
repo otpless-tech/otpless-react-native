@@ -20,5 +20,7 @@ RCT_EXTERN_METHOD(startHeadless:(NSDictionary *)request)
 RCT_EXTERN_METHOD(setWebViewInspectable:(BOOL)isInspectable)
 
 RCT_EXTERN_METHOD(enableOneTap:(BOOL)enable)
+
+RCT_EXTERN_METHOD(enableDebugLogging:(BOOL)enable)
 @end
 
