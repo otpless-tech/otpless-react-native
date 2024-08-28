@@ -11,10 +11,6 @@ object OtplessReactNativeManager {
     wModule = WeakReference(otplessModule)
   }
 
-  fun onNewIntent(intent: Intent?) {
-    wModule?.get()?.otplessView?.onNewIntent(intent)
-  }
-
   fun onBackPressed(): Boolean {
     return wModule?.get()?.otplessView?.onBackPressed() ?: false
   }

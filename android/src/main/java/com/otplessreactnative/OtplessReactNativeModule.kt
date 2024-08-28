@@ -179,24 +179,14 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
 
   companion object {
     const val NAME = "OtplessReactNative"
-    private const val OTPLESS_WEBAUTHN_REGISTER_REQUEST_CODE = 9767357
-    private const val OTPLESS_WEBAUTHN_SIGNIN_REQUEST_CODE = 9767358
   }
 
   override fun onActivityResult(activity: Activity?, requestCode: Int, resultCode: Int, data: Intent?) {
-    if (!isOtplessRequestCode(requestCode) || otplessView == null) return
-    otplessView!!.onActivityResult(requestCode, resultCode, data)
+    otplessView?.onActivityResult(requestCode, resultCode, data)
   }
 
-  override fun onNewIntent(p0: Intent?) {
-    // Intentionally left blank because we must override onNewIntent as we are implementing ActivityEventListener to use onActivityResult.
-  }
-
-  private fun isOtplessRequestCode(requestCode: Int): Boolean {
-    return when (requestCode) {
-      OTPLESS_WEBAUTHN_REGISTER_REQUEST_CODE -> true
-      OTPLESS_WEBAUTHN_SIGNIN_REQUEST_CODE -> true
-      else -> false
-    }
+  override fun onNewIntent(intent: Intent?) {
+    intent ?: return
+    otplessView?.onNewIntent(intent)
   }
 }
