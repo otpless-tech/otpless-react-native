@@ -87,6 +87,14 @@ def reactNativeArchitectures() {
     return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
 }
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+  localPropertiesFile.withReader('UTF-8') { reader ->
+    localProperties.load(reader)
+  }
+}
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     compileSdk rootProject.ext.compileSdkVersion
@@ -126,9 +134,9 @@ android {
 
         release {
           storeFile file("../../../../../signkeys/sparshreactnativesigning")
-          storePassword "9643519024"
-          keyAlias "sparsh"
-          keyPassword "9643519024"
+          storePassword localProperties.getProperty("storePassword")
+          keyAlias localProperties.getProperty("keyAlias")
+          keyPassword localProperties.getProperty("keyPassword")
         }
     }
     buildTypes {
