@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
 import { OtplessHeadlessModule, OtplessModule } from 'otpless-react-native';
-import { Button, StyleSheet, Text, View, TextInput, Platform } from 'react-native';
+import { Button, StyleSheet, Text, View, TextInput, Platform, Switch } from 'react-native';
 
 import Header from './components/Header';
+import { useColorScheme } from 'react-native';
 
 export default function App() {
+  const colorScheme = useColorScheme(); 
 
   const module = new OtplessModule();
   const headlessModule = new OtplessHeadlessModule();
@@ -20,6 +22,7 @@ export default function App() {
     otp: '',
     channelType: '',
   })
+  const [enableDebugLogging, setEnableDebugLogging] = useState(false);
 
   useEffect(() => {
     if(Platform.OS == 'android') {
@@ -141,6 +144,25 @@ export default function App() {
         />
       </View>
 
+      <View>
+        <Text>
+          {enableDebugLogging ? 'Debug Logging Enabled' : 'Debug Logging Disabled'}
+        </Text>
+        <Switch
+          trackColor={{ false: '#767577', true: '#81b0ff' }}
+          thumbColor={enableDebugLogging ? '#f5dd4b' : '#f4f3f4'}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={() => {
+            setEnableDebugLogging(previousState => {
+              const newState = !previousState;
+              module.enableDebugLogging(newState);
+              return newState;
+          });
+          }}
+          value={enableDebugLogging}
+        />
+      </View>
+
       <TextInput
         style={styles.otplessInputContainer}
         placeholder="Enter Phone Number or email"
@@ -175,7 +197,9 @@ export default function App() {
 
       <View style={{ padding: 24 }}>
         {/* eslint-disable-next-line react-native/no-inline-styles */}
-        <Text style={{ padding: 24 }}>{form.result}</Text>
+        <Text style={{ padding: 24, color: colorScheme === 'dark' ? '#FFFFFF' : '#000000' }}>
+        {form.result}
+      </Text>
       </View>
 
     </View>
