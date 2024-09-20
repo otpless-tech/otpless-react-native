@@ -22,7 +22,6 @@ export default function App() {
     otp: '',
     channelType: '',
   })
-  const [enableDebugLogging, setEnableDebugLogging] = useState(false);
 
   useEffect(() => {
     if(Platform.OS == 'android') {
@@ -31,6 +30,7 @@ export default function App() {
       console.log("Otpless: android headless init done")
     }
     headlessModule.setWebViewInspectable(true);
+    module.enableDebugLogging(true);
     return () => {
       headlessModule.clearListener();
     }
@@ -99,7 +99,7 @@ export default function App() {
           }
         }
       }
-    } else {
+} else {
       headlessRequest = {
         "channelType": form.channelType
       }
@@ -145,22 +145,6 @@ export default function App() {
       </View>
 
       <View>
-        <Text>
-          {enableDebugLogging ? 'Debug Logging Enabled' : 'Debug Logging Disabled'}
-        </Text>
-        <Switch
-          trackColor={{ false: '#767577', true: '#81b0ff' }}
-          thumbColor={enableDebugLogging ? '#f5dd4b' : '#f4f3f4'}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={() => {
-            setEnableDebugLogging(previousState => {
-              const newState = !previousState;
-              module.enableDebugLogging(newState);
-              return newState;
-          });
-          }}
-          value={enableDebugLogging}
-        />
       </View>
 
       <TextInput

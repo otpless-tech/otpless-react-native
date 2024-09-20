@@ -90,11 +90,6 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
     func setWebViewInspectable(isInspectable: Bool) {
         Otpless.sharedInstance.webviewInspectable = isInspectable
     }
-    
-    @objc(enableOneTap:)
-    func enableOneTap(enable: Bool) {
-        Otpless.sharedInstance.setOneTapEnabled(enable)
-    }
   
     @objc(enableDebugLogging:)
     func enableDebugLogging(enable: Bool) {

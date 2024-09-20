@@ -168,11 +168,6 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
   }
 
   @ReactMethod
-  fun enableOneTap(enable: Boolean) {
-    otplessView!!.enableOneTap(enable)
-  }
-
-  @ReactMethod
   fun enableDebugLogging(isEnabled: Boolean) {
     Utility.debugLogging = isEnabled
   }
