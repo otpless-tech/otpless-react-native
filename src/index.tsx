@@ -37,10 +37,6 @@ class OtplessBaseModule {
     OtplessReactNative.setWebViewInspectable(isInspectable)
   }
 
-  enableOneTap(enable: boolean) {
-    OtplessReactNative.setWebViewInspectable(enable)
-  }
-
   enableDebugLogging(isEnabled: boolean) {
     OtplessReactNative.enableDebugLogging(isEnabled)
   }
