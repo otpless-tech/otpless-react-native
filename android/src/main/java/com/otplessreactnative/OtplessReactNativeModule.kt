@@ -172,6 +172,19 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
     Utility.debugLogging = isEnabled
   }
 
+  @ReactMethod
+  fun showPhoneHintLib(showFallback: Boolean, callback: Callback) {
+    otplessView!!.phoneHintManager.showPhoneNumberHint(showFallback) { phoneHintResult ->
+      val jsonObject = JSONObject().apply {
+        if (phoneHintResult.first != null)
+          "phoneNumber" to phoneHintResult.first!!
+        else
+          "error" to phoneHintResult.second!!.message!!
+      }
+      callback.invoke(convertJsonToMap(jsonObject))
+    }
+  }
+
   companion object {
     const val NAME = "OtplessReactNative"
   }
