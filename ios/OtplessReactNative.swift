@@ -98,6 +98,11 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
       }
     }
   
+    @objc(showPhoneHintLib::)
+    func showPhoneHintLib(showFallback: Bool, callback: RCTResponseSenderBlock) {
+      let params = ["error": "Phone hint lib is not supported on iOS."]
+      callback([params])
+    }
     
     func onHeadlessResponse(response: HeadlessResponse?) {
         if response == nil {

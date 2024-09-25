@@ -75,6 +75,10 @@ class OtplessHeadlessModule extends OtplessBaseModule {
   startHeadless(input: any) {
     OtplessReactNative.startHeadless(input);
   }
+
+  showPhoneHint(showFallback: boolean): Promise<string> {
+    return OtplessReactNative.showPhoneHintLib(showFallback)
+  }
 }
 
 class OtplessModule extends OtplessBaseModule {
