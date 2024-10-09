@@ -11,7 +11,10 @@ export default function HeadlessPage() {
         countryCode: '',
         otp: '',
         channelType: '',
-        email: ''
+        email: '',
+        otpLength: '',
+        expiry: '',
+        deliveryChannel: ''
     });
 
     useEffect(() => {
@@ -31,12 +34,15 @@ export default function HeadlessPage() {
 
     const startHeadless = () => {
         let headlessRequest: any = {};
-        const { phoneNumber, countryCode, otp, channelType } = form;
+        const { phoneNumber, countryCode, otp, channelType, expiry, otpLength, deliveryChannel } = form;
         if (phoneNumber) {
             headlessRequest = {
                 phone: phoneNumber,
-                countryCode,
-                otp,
+                countryCode: countryCode,
+                otp: otp,
+                expiry: expiry,
+                otpLength: otpLength,
+                deliveryChannel: deliveryChannel
             };
         } else {
             headlessRequest = { channelType };
@@ -55,40 +61,62 @@ export default function HeadlessPage() {
     };
 
     const showPhoneHintLib = async () => {
-        const result = await headlessModule.showPhoneHint(true);
-        console.log(result);
-
-        // headlessModule.showPhoneHint(true, (result: any) => {
-        //     console.log("Result: ", result)
-        //     if (result.phoneNumber) {
-        //         handleChange("phoneNumber", result.phoneNumber)
-        //     } else {
-        //         setResult(result.error)
-        //     }
-        // })
-
+        headlessModule.showPhoneHint(false, (response: any) => {
+            console.log("Phone hint result:", response);
+            if (response.phoneNumber) {
+                const phoneNumber = response.phoneNumber;
+                const countryCode = phoneNumber.substring(0, 3); 
+                const numberWithoutCountryCode = phoneNumber.substring(3);
+        
+                setForm(prevForm => ({
+                    ...prevForm,
+                    phoneNumber: numberWithoutCountryCode.trim(),
+                    countryCode: countryCode.trim(),
+                    result: 'Result:',
+                }));
+            } else if (response.error) {
+                setResult(response.error);
+            }
+        });
     }
 
     return (
         <ScrollView >
-
             <TextInput
-                style={styles.input}
-                placeholder="Enter Phone Number"
+                style={[styles.input, { flex: 1 }]}
+                placeholder="Phone Number"
                 placeholderTextColor="#999"
                 value={form.phoneNumber}
                 onChangeText={(text) => handleChange('phoneNumber', text)}
                 keyboardType="phone-pad"
             />
+            <View style={styles.row}>
+                <TextInput
+                    style={[styles.input, { flex: 1 }]}
+                    placeholder="Country Code"
+                    placeholderTextColor="#999"
+                    value={form.countryCode}
+                    onChangeText={(text) => handleChange('countryCode', text)}
+                    keyboardType="phone-pad"
+                />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Enter Country Code"
-                placeholderTextColor="#999"
-                value={form.countryCode}
-                onChangeText={(text) => handleChange('countryCode', text)}
-                keyboardType="phone-pad"
-            />
+                <TextInput
+                    style={[styles.input, { flex: 1 }]}
+                    placeholder="OTP Length"
+                    placeholderTextColor="#999"
+                    value={form.otpLength}
+                    onChangeText={(text) => handleChange('otpLength', text)}
+                    keyboardType="numeric"
+                />
+                <TextInput
+                    style={[styles.input, { flex: 1 }]}
+                    placeholder="Expiry"
+                    placeholderTextColor="#999"
+                    value={form.expiry}
+                    onChangeText={(text) => handleChange('expiry', text)}
+                    keyboardType="numeric"
+                />
+            </View>
 
             <TextInput
                 style={styles.input}
@@ -107,13 +135,22 @@ export default function HeadlessPage() {
                 keyboardType="phone-pad"
             />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Enter Channel Type"
-                placeholderTextColor="#999"
-                value={form.channelType}
-                onChangeText={(text) => handleChange('channelType', text.toUpperCase())}
-            />
+            <View style={styles.row}>
+                <TextInput
+                    style={[styles.input, { flex: 1 }]}
+                    placeholder="Enter SSO Channel"
+                    placeholderTextColor="#999"
+                    value={form.channelType}
+                    onChangeText={(text) => handleChange('channelType', text.toUpperCase())}
+                />
+                <TextInput
+                    style={[styles.input, { flex: 1 }]}
+                    placeholder="Delivery Channel"
+                    placeholderTextColor="#999"
+                    value={form.deliveryChannel}
+                    onChangeText={(text) => handleChange('deliveryChannel', text.toUpperCase())}
+                />
+            </View>
 
             <TouchableOpacity style={styles.primaryButton} onPress={startHeadless}>
                 <Text style={styles.buttonText}>Start Headless</Text>
@@ -148,8 +185,9 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         color: '#000000',
         borderRadius: 8,
-        padding: 15,
-        marginVertical: 10, 
+        padding: 10,
+        marginVertical: 10,
+        marginHorizontal: 10,
         backgroundColor: '#fff',
         fontSize: 16,
     },
@@ -159,6 +197,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 30,
         justifyContent: 'center',
+        marginHorizontal: 10,
         alignItems: 'center'
     },
     buttonText: {
@@ -174,7 +213,13 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 8,
         width: '100%',
-        maxWidth: 400, 
+        maxWidth: 400,
         textAlign: 'center',
     },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 12,
+    }
 });

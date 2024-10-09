@@ -11,6 +11,8 @@ import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.otpless.dto.HeadlessRequest
 import com.otpless.dto.HeadlessResponse
+import com.otpless.dto.OtpDeliveryChannel
+import com.otpless.dto.OtpLength
 import com.otpless.dto.OtplessRequest
 import com.otpless.dto.OtplessResponse
 import com.otpless.main.OtplessManager
@@ -34,7 +36,8 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
     get() {
       if (_otplessView == null) {
         if (currentActivity == null) return null
-        _otplessView = OtplessManager.getInstance().getOtplessView(currentActivity)
+        _otplessView = OtplessReactNativeManager.wOtplessView.get()
+          ?: OtplessManager.getInstance().getOtplessView(currentActivity)
       }
       return _otplessView
     }
@@ -79,6 +82,15 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
       callback.invoke(resultMap)
     } catch (e: JSONException) {
       throw RuntimeException(e)
+    }
+  }
+
+  private inline fun String.softParseInt(onSuccessParse: (Int) -> Unit) {
+    if (this.isEmpty()) return
+    try {
+      onSuccessParse(this.toInt())
+    } catch (ex: NumberFormatException) {
+      Utility.debugLog(ex)
     }
   }
 
@@ -152,6 +164,16 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
         headlessRequest.setChannelType(data.getString("channelType") ?: "")
       }
     }
+    data.getString("expiry")?.softParseInt {
+      headlessRequest.setExpiry(it)
+    }
+    data.getString("otpLength")?.softParseInt {
+      headlessRequest.setOtpLength(OtpLength.suggestOtpSize(it))
+    }
+    data.getString("deliveryChannel")?.let { deliveryChannel ->
+      headlessRequest.setDeliveryChannel(OtpDeliveryChannel.from(deliveryChannel.uppercase()))
+    }
+
     reactContext.currentActivity!!.runOnUiThread {
       otplessView!!.startHeadless(headlessRequest, this::sendHeadlessEventCallback)
     }
@@ -175,12 +197,13 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
   @ReactMethod
   fun showPhoneHintLib(showFallback: Boolean, callback: Callback) {
     otplessView!!.phoneHintManager.showPhoneNumberHint(showFallback) { phoneHintResult ->
-      val jsonObject = JSONObject().apply {
-        if (phoneHintResult.first != null)
-          "phoneNumber" to phoneHintResult.first!!
-        else
-          "error" to phoneHintResult.second!!.message!!
+      val jsonObject = JSONObject()
+      if (phoneHintResult.first != null) {
+        jsonObject.put("phoneNumber", phoneHintResult.first!!)
+      } else {
+        jsonObject.put("error", phoneHintResult.second!!.message!!)
       }
+      Utility.debugLog(jsonObject.toString())
       callback.invoke(convertJsonToMap(jsonObject))
     }
   }
@@ -189,7 +212,12 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
     const val NAME = "OtplessReactNative"
   }
 
-  override fun onActivityResult(activity: Activity?, requestCode: Int, resultCode: Int, data: Intent?) {
+  override fun onActivityResult(
+    activity: Activity?,
+    requestCode: Int,
+    resultCode: Int,
+    data: Intent?
+  ) {
     otplessView?.onActivityResult(requestCode, resultCode, data)
   }
 

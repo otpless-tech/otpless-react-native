@@ -83,6 +83,17 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
         } else if let channelType = args["channelType"] {
             headlessRequest.setChannelType(channelType as! String)
         }
+        
+        if let deliveryChannel = args["deliveryChannel"] as? String {
+          headlessRequest.setDeliveryChannel(deliveryChannel)
+        }
+        if let otpExpiry = args["expiry"] as? String {
+          headlessRequest.setExpiry(expiry: otpExpiry)
+        }
+        if let otpLength = args["otpLength"] as? String {
+          headlessRequest.setOtpLength(otpLength: otpLength)
+        }
+        
         return headlessRequest
     }
     
@@ -98,7 +109,7 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
       }
     }
   
-    @objc(showPhoneHintLib::)
+    @objc(showPhoneHintLib:withCallback:)
     func showPhoneHintLib(showFallback: Bool, callback: RCTResponseSenderBlock) {
       let params = ["error": "Phone hint lib is not supported on iOS."]
       callback([params])

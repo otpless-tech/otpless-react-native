@@ -1,5 +1,5 @@
 import type { StackNavigationProp } from '@react-navigation/stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -23,65 +23,69 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const [otplessResponse, setOtplessResponse] = useState<string | undefined>(undefined);
 
   const backgroundStyle = {
-      flex: 1,
-      backgroundColor: 'white',
-    };
+    flex: 1,
+    backgroundColor: 'white',
+  };
 
   const showOtplessLoginPage = () => {
-      let request = {
-          appId: "YYTFDI0602X3O5T5SIS5"
-      };
-      module.showLoginPage((data) => {
-        let response: string = '';
-          if (data.data === null || data.data === undefined) {
-            response = data.errorMessage;
-          } else {
-            response = JSON.stringify(data.data);
-          }
-          setOtplessResponse(response);
-      }, request);
+    let request = {
+      appId: "YYTFDI0602X3O5T5SIS5"
+    };
+    module.showLoginPage((data) => {
+      let response: string = '';
+      if (data.data === null || data.data === undefined) {
+        response = data.errorMessage;
+      } else {
+        response = JSON.stringify(data.data);
+      }
+      setOtplessResponse(response);
+    }, request);
   };
+
+  useEffect(() => {
+    module.setWebViewInspectable(true)
+  }, []);
 
   return (
     <ScrollView
-    contentInsetAdjustmentBehavior="automatic"
-    style={backgroundStyle}>
-    <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Choose Your Test Mode</Text>
-      <TouchableOpacity 
-            style={{ 
+      contentInsetAdjustmentBehavior="automatic"
+      style={backgroundStyle}>
+      <View style={styles.container}>
+        <Text style={styles.sectionTitle}>Choose Your Test Mode</Text>
+        <TouchableOpacity
+          style={{
             marginVertical: 10,
             backgroundColor: "#007AFF",
             padding: 10,
-            borderRadius:30,
-            justifyContent: 'center', 
-            alignItems:'center'
+            borderRadius: 30,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+          onPress={showOtplessLoginPage}>
+          <Text
+            style={{
+              color: 'white'
             }}
-            onPress={showOtplessLoginPage}>
-              <Text
-                style={{
-                  color: 'white'
-                }}
-              >Pre Built UI</Text>
+          >Pre Built UI</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-            style={{ 
+        <TouchableOpacity
+          style={{
             marginVertical: 10,
             backgroundColor: "#007AFF",
             padding: 10,
-            borderRadius:30,
-            justifyContent: 'center', 
-            alignItems:'center'
+            borderRadius: 30,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+          onPress={() => {
+            navigation.navigate('Headless')
+          }}>
+          <Text
+            style={{
+              color: 'white'
             }}
-            onPress={() => {
-                navigation.navigate('Headless')
-            }}>
-              <Text
-                style={{
-                  color: 'white'
-                }}
-              >Headless</Text>
+          >Headless</Text>
         </TouchableOpacity>
 
         {otplessResponse && otplessResponse.length > 0 && (
@@ -91,9 +95,9 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
               style={{
                 backgroundColor: "#007AFF",
                 padding: 10,
-                borderRadius:30,
-                justifyContent: 'center', 
-                alignItems:'center'
+                borderRadius: 30,
+                justifyContent: 'center',
+                alignItems: 'center'
               }}
               onPress={() => {
                 if (otplessResponse) {
@@ -105,25 +109,25 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           </View>
         )}
 
-        <Text style={{fontSize: 16, marginBottom: 10}}>{otplessResponse}</Text>
-    </View>
-  </ScrollView>
+        <Text style={{ fontSize: 16, marginBottom: 10 }}>{otplessResponse}</Text>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-      paddingHorizontal: 20,
-      paddingVertical: 20,
-    },
-    sectionTitle: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      paddingVertical: 10,
-      color: 'black',
-    },
-  });
+  container: {
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingVertical: 10,
+    color: 'black',
+  },
+});
 
 export default HomeScreen;
 

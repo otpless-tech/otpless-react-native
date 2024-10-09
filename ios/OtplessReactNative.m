@@ -21,6 +21,6 @@ RCT_EXTERN_METHOD(setWebViewInspectable:(BOOL)isInspectable)
 
 RCT_EXTERN_METHOD(enableDebugLogging:(BOOL)enable)
 
-RCT_EXTERN_METHOD(showPhoneHintLib:(BOOL)showFallback (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(showPhoneHintLib:(BOOL)showFallback withCallback: (RCTResponseSenderBlock)callback)
 @end
 
