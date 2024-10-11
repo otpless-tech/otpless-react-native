@@ -29,7 +29,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   const showOtplessLoginPage = () => {
     let request = {
-      appId: "YYTFDI0602X3O5T5SIS5"
+      appId: APP_ID
     };
     module.showLoginPage((data) => {
       let response: string = '';
