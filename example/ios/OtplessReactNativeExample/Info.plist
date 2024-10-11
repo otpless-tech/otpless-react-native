@@ -53,11 +53,6 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>localhost</key>
-            <dict>
-                <key>NSExceptionAllowsInsecureHTTPLoads</key>
-                <true/>
-            </dict>
 			<key>80.in.safr.sekuramobile.com</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
@@ -66,6 +61,11 @@
 				<true/>
 				<key>NSTemporaryExceptionMinimumTLSVersion</key>
 				<string>TLSv1.1</string>
+			</dict>
+			<key>localhost</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
 			</dict>
 			<key>partnerapi.jio.com</key>
 			<dict>
