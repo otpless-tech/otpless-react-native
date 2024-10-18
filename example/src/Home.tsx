@@ -9,7 +9,7 @@ import {
   Clipboard,
 } from 'react-native';
 import 'react-native-gesture-handler';
-import { OtplessModule, OtplessSecureSDK } from 'otpless-react-native';
+import { OtplessModule, OtplessSimUtils } from 'otpless-react-native';
 
 export const APP_ID = ""
 
@@ -19,7 +19,7 @@ type Props = {
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const module = new OtplessModule();
-  const secureSDK = new OtplessSecureSDK();
+  const otplessSimUtils = OtplessSimUtils.getInstance();
 
   const [otplessResponse, setOtplessResponse] = useState<string | undefined>(undefined);
   const [simStates, setSimStates] = useState('')
@@ -52,13 +52,13 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
     setupSimStatusChangeListener();
     
     return () => {
-      secureSDK.detachSimEjectionListener();
+      otplessSimUtils.detachSimEjectionListener();
     };
   }, []);
 
   const attachSecureSDK = async () => {
     try {
-      await secureSDK.attachSecureSDK(APP_ID);
+      await module.attachSecureSDK(APP_ID);
       console.log("Secure SDK attached successfully");
     } catch (error: any) {
       console.error("Error attaching Secure SDK:", error.message);
@@ -67,7 +67,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const setupSimStatusChangeListener = () => {
-    secureSDK.setupSimStatusChangeListener(handleSimStatusChange);
+    otplessSimUtils.setupSimStatusChangeListener(handleSimStatusChange);
   };
   const handleSimStatusChange = (simEntries: any[]) => {
     console.log('Received SIM status changes:', simEntries);
@@ -77,7 +77,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
   
   const getEjectedSimEntries = async () => {
     try {
-      const entries = await secureSDK.getEjectedSimsEntries();
+      const entries = await otplessSimUtils.getEjectedSimsEntries();
       console.log("Ejected SIM Entries:", entries);
       setSimStates(JSON.stringify(entries)); // Ensure we stringify the result for display
     } catch (error) {
