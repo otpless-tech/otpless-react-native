@@ -21,7 +21,8 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
     }
     
     override func supportedEvents() -> [String]! {
-        return ["OTPlessEventResult"]
+        // Added event for "otpless_sim_status_change_event" to prevent runtime warning in iOS.
+        return ["OTPlessEventResult", "otpless_sim_status_change_event"]
     }
     
     @objc(showFabButton:)
@@ -125,6 +126,21 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
         params["responseType"] = response!.responseType
         sendEvent(withName: "OTPlessEventResult", body: params)
     }
+  
+  @objc
+  func setSimEjectionListener(_ isToAttach: Bool) {
+      // Not supported in iOS.
+  }
+
+  @objc(getEjectedSimsEntries:rejecter:)
+    func getEjectedSimsEntries(promise: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    reject("SIM_ERROR", "Sim entries not available on iOS.", nil)
+  }
+  
+  @objc(attachSecureSDK:promise:rejecter:)
+  func attachSecureSDK(appId: String, promise: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    reject("SERVICE_ERROR", "Secure SDK is not supported on iOS.", nil)
+  }
 }
 
 extension OtplessReactNative {

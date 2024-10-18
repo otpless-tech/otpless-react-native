@@ -90,4 +90,57 @@ class OtplessModule extends OtplessBaseModule {
   }
 }
 
-export { OtplessModule, OtplessHeadlessModule };
+class OtplessSecureSDK extends OtplessBaseModule {
+  private eventEmitter: NativeEventEmitter;
+
+  constructor() {
+    super()
+    this.eventEmitter = new NativeEventEmitter(OtplessReactNative);
+  }
+
+
+  attachSecureSDK(appId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      OtplessReactNative.attachSecureSDK(appId)
+        .then(() => {
+          resolve();
+        })
+        .catch((error: any) => {
+          reject(new Error(error.message || "Failed to attach secure SDK"));
+        });
+    });
+  }
+
+  getEjectedSimsEntries(): Promise<any[]> {
+    return new Promise((resolve, reject) => {
+      OtplessReactNative.getEjectedSimsEntries()
+        .then((result: any) => {
+          if (Array.isArray(result)) { // Ensure we're getting an array
+            resolve(result);
+          } else {
+            reject(new Error('Result is not an array'));
+          }
+        })
+        .catch((error: any) => {
+          reject(new Error('Failed to fetch ejected SIM entries: ' + error));
+        });
+    });
+  }
+
+  setupSimStatusChangeListener(callback: (entries: any[]) => void) {
+    OtplessReactNative.setSimEjectionListener(true);
+    this.eventEmitter.addListener('otpless_sim_status_change_event', (event) => {
+      console.log('Sim status changed:', event);
+      const simEntries = event.simEntries;
+      callback(simEntries);
+    });
+  }
+
+  detachSimEjectionListener() {
+    OtplessReactNative.setSimEjectionListener(false);
+    this.eventEmitter.removeAllListeners('otpless_sim_status_change_event');
+  }
+
+}
+
+export { OtplessModule, OtplessHeadlessModule, OtplessSecureSDK };
