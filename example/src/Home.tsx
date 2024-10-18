@@ -9,7 +9,7 @@ import {
   Clipboard,
 } from 'react-native';
 import 'react-native-gesture-handler';
-import { OtplessModule } from 'otpless-react-native';
+import { OtplessModule, OtplessSimUtils } from 'otpless-react-native';
 
 export const APP_ID = ""
 
@@ -19,8 +19,10 @@ type Props = {
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
   const module = new OtplessModule();
+  const otplessSimUtils = OtplessSimUtils.getInstance();
 
   const [otplessResponse, setOtplessResponse] = useState<string | undefined>(undefined);
+  const [simStates, setSimStates] = useState('')
 
   const backgroundStyle = {
     flex: 1,
@@ -44,7 +46,46 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     module.setWebViewInspectable(true)
+
+    attachSecureSDK()
+    module.enableDebugLogging(true)
+    setupSimStatusChangeListener();
+    
+    return () => {
+      otplessSimUtils.detachSimEjectionListener();
+    };
   }, []);
+
+  const attachSecureSDK = async () => {
+    try {
+      await module.attachSecureSDK(APP_ID);
+      console.log("Secure SDK attached successfully");
+    } catch (error: any) {
+      console.error("Error attaching Secure SDK:", error.message);
+      // Merchant can handle specific error messages or actions
+    }
+  };
+
+  const setupSimStatusChangeListener = () => {
+    otplessSimUtils.setupSimStatusChangeListener(handleSimStatusChange);
+  };
+  const handleSimStatusChange = (simEntries: any[]) => {
+    console.log('Received SIM status changes:', simEntries);
+    // Handle the received SIM entries here
+    setSimStates(JSON.stringify(simEntries, null, 2))
+  };
+  
+  const getEjectedSimEntries = async () => {
+    try {
+      const entries = await otplessSimUtils.getEjectedSimsEntries();
+      console.log("Ejected SIM Entries:", entries);
+      setSimStates(JSON.stringify(entries)); // Ensure we stringify the result for display
+    } catch (error) {
+      let errorStr = "Error fetching ejected SIM entries: " + error; // Use error.message for better error handling
+      setSimStates(errorStr);
+    }
+  };
+  
 
   return (
     <ScrollView
@@ -88,6 +129,29 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           >Headless</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity
+          style={{
+            marginVertical: 10,
+            backgroundColor: "#007AFF",
+            padding: 10,
+            borderRadius: 30,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+          onPress={() => {
+            getEjectedSimEntries()
+          }}>
+          <Text
+            style={{
+              color: 'white'
+            }}
+          >Get ejected sim entries</Text>
+        </TouchableOpacity>
+
+        {simStates && simStates.length > 0 && (
+           <Text style={{ fontSize: 16, marginBottom: 10, color: 'black' }}>{simStates}</Text>
+        )}
+
         {otplessResponse && otplessResponse.length > 0 && (
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', margin: 10 }}>
             <Text style={{ fontWeight: 'bold', color: 'black', fontSize: 18 }}>Otpless Response</Text>
@@ -109,7 +173,7 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
           </View>
         )}
 
-        <Text style={{ fontSize: 16, marginBottom: 10 }}>{otplessResponse}</Text>
+        <Text style={{ fontSize: 16, marginBottom: 10, color: 'black' }}>{otplessResponse}</Text>
       </View>
     </ScrollView>
   );

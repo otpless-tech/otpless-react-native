@@ -163,6 +163,10 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    //region secure sdk
+    implementation 'io.github.otpless-tech:otpless-secure-sdk:0.1.5'
+    //endregion
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

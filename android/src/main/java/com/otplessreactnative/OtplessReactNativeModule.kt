@@ -3,11 +3,15 @@ package com.otplessreactnative
 import android.app.Activity
 import android.content.Intent
 import com.facebook.react.bridge.ActivityEventListener
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Callback
+import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.otpless.dto.HeadlessRequest
 import com.otpless.dto.HeadlessResponse
@@ -17,7 +21,10 @@ import com.otpless.dto.OtplessRequest
 import com.otpless.dto.OtplessResponse
 import com.otpless.main.OtplessManager
 import com.otpless.main.OtplessView
+import com.otpless.tesseract.OtplessSecureService
+import com.otpless.tesseract.sim.OtplessSimStateReceiverApi
 import com.otpless.utils.Utility
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -206,6 +213,68 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
       Utility.debugLog(jsonObject.toString())
       callback.invoke(convertJsonToMap(jsonObject))
     }
+  }
+
+  @ReactMethod
+  fun attachSecureSDK(appId: String, promise: Promise) {
+    try {
+      val managerClass = Class.forName("com.otpless.secure.OtplessSecureManager")
+      val managerInstance = managerClass.getField("INSTANCE").get(null)
+      val creatorMethod = managerClass.getDeclaredMethod(
+        "getOtplessSecureService", Activity::class.java, String::class.java
+      )
+      val secureService = creatorMethod.invoke(managerInstance, currentActivity, appId) as? OtplessSecureService
+      otplessView?.attachOtplessSecureService(secureService)
+      promise.resolve(null)
+    } catch (ex: Exception) {
+      promise.reject("SERVICE_ERROR", "Failed to attach secure service: ${ex.message}")
+    }
+  }
+
+  @ReactMethod
+  fun getEjectedSimsEntries(promise: Promise) {
+    val result = JSONArray()
+    try {
+      for (each in OtplessSimStateReceiverApi.savedEjectedSimEntries(reactContext.applicationContext)) {
+        val jsonObject = JSONObject()
+        jsonObject.put("state", each.state)
+        jsonObject.put("transactionTime", each.transactionTime)
+        result.put(jsonObject)
+      }
+      val resultList = convertJsonToArray(result)
+      promise.resolve(resultList)
+    } catch (e: Exception) {
+      Utility.debugLog(e)
+      promise.reject("SIM_ERROR", "Failed to fetch ejected SIM entries", e)
+    }
+  }
+
+  @ReactMethod
+  fun setSimEjectionListener(isToAttach: Boolean) {
+    if (isToAttach) {
+      OtplessSimStateReceiverApi.setSimStateChangeListener {
+        val result = Arguments.createArray()
+        for (each in OtplessSimStateReceiverApi.savedEjectedSimEntries(reactContext.applicationContext)) {
+          val simInfo = Arguments.createMap().apply {
+            putString("state", each.state)
+            putDouble("transactionTime", each.transactionTime.toDouble())
+          }
+          result.pushMap(simInfo)
+        }
+
+        // Emit the event to JS side
+        sendEvent(reactContext, "otpless_sim_status_change_event", Arguments.createMap().apply {
+          putArray("simEntries", result)
+        })
+      }
+    } else {
+      OtplessSimStateReceiverApi.setSimStateChangeListener(null)
+    }
+  }
+
+  private fun sendEvent(reactContext: ReactContext, eventName: String, params: WritableMap?) {
+    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+      .emit(eventName, params)
   }
 
   companion object {

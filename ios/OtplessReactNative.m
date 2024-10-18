@@ -22,5 +22,9 @@ RCT_EXTERN_METHOD(setWebViewInspectable:(BOOL)isInspectable)
 RCT_EXTERN_METHOD(enableDebugLogging:(BOOL)enable)
 
 RCT_EXTERN_METHOD(showPhoneHintLib:(BOOL)showFallback withCallback: (RCTResponseSenderBlock)callback)
+
+RCT_EXTERN_METHOD(setSimEjectionListener:(BOOL)isToAttach)
+RCT_EXTERN_METHOD(getEjectedSimsEntries:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(attachSecureSDK:(NSString *)appId promise:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 @end
 
