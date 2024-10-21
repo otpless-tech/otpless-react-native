@@ -20,6 +20,41 @@ const OtplessReactNative = NativeModules.OtplessReactNative
 interface HasWhatsappCallback {
   (hasWhatsapp: boolean): void;
 }
+// Singleton class to prevent multiple listeners from being created.
+class OtplessSimUtils {
+  private static instance: OtplessSimUtils | null = null;
+  private simEventEmitter: NativeEventEmitter;
+
+  private constructor() {
+    this.simEventEmitter = new NativeEventEmitter(OtplessReactNative);
+  }
+
+  public static getInstance(): OtplessSimUtils {
+    if (this.instance === null) {
+      this.instance = new OtplessSimUtils();
+    }
+    return this.instance;
+  }
+
+  public getEjectedSimsEntries(): Promise<any[]> {
+    return OtplessReactNative.getEjectedSimsEntries()
+  }
+
+  public setupSimStatusChangeListener(callback: (entries: any[]) => void) {
+    OtplessReactNative.setSimEjectionListener(true);
+    this.simEventEmitter.addListener('otpless_sim_status_change_event', (event) => {
+      const simEntries = event.simEntries;
+      callback(simEntries);
+    });
+  }
+
+  public detachSimEjectionListener() {
+    OtplessReactNative.setSimEjectionListener(false);
+    this.simEventEmitter.removeAllListeners('otpless_sim_status_change_event');
+  }
+}
+
+
 
 class OtplessBaseModule {
   isWhatsappInstalled(callback: HasWhatsappCallback) {
@@ -27,6 +62,10 @@ class OtplessBaseModule {
       const hasWhatsapp = result.hasWhatsapp === true;
       callback(hasWhatsapp);
     });
+  }
+
+  attachSecureSDK(appId: string): Promise<void> {
+    return OtplessReactNative.attachSecureSDK(appId)
   }
 
   setLoaderVisibility(input: boolean) {
@@ -90,4 +129,4 @@ class OtplessModule extends OtplessBaseModule {
   }
 }
 
-export { OtplessModule, OtplessHeadlessModule };
+export { OtplessModule, OtplessHeadlessModule, OtplessSimUtils };
