@@ -37,19 +37,7 @@ class OtplessSimUtils {
   }
 
   public getEjectedSimsEntries(): Promise<any[]> {
-    return new Promise((resolve, reject) => {
-      OtplessReactNative.getEjectedSimsEntries()
-        .then((result: any) => {
-          if (Array.isArray(result)) {
-            resolve(result);
-          } else {
-            reject(new Error('Failed to fetch ejected SIM entries.'));
-          }
-        })
-        .catch((error: any) => {
-          reject(new Error('Failed to fetch ejected SIM entries: ' + error));
-        });
-    });
+    return OtplessReactNative.getEjectedSimsEntries()
   }
 
   public setupSimStatusChangeListener(callback: (entries: any[]) => void) {
@@ -77,15 +65,7 @@ class OtplessBaseModule {
   }
 
   attachSecureSDK(appId: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      OtplessReactNative.attachSecureSDK(appId)
-        .then(() => {
-          resolve();
-        })
-        .catch((error: any) => {
-          reject(new Error(error.message || "Failed to attach secure SDK"));
-        });
-    });
+    return OtplessReactNative.attachSecureSDK(appId)
   }
 
   setLoaderVisibility(input: boolean) {
