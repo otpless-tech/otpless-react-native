@@ -34,7 +34,8 @@ export default function HeadlessPage() {
 
     const startHeadless = () => {
         let headlessRequest: any = {};
-        const { phoneNumber, countryCode, otp, channelType, expiry, otpLength, deliveryChannel } = form;
+        const { phoneNumber, countryCode, otp, channelType, email, expiry, otpLength, deliveryChannel } = form;
+    
         if (phoneNumber) {
             headlessRequest = {
                 phone: phoneNumber,
@@ -44,9 +45,18 @@ export default function HeadlessPage() {
                 otpLength: otpLength,
                 deliveryChannel: deliveryChannel
             };
-        } else {
+        } else if (email) {
+            headlessRequest = {
+                email: email,
+                otp: otp,
+                expiry: expiry,
+                otpLength: otpLength,
+                deliveryChannel: deliveryChannel
+            };
+        } else if (channelType) {
             headlessRequest = { channelType };
         }
+    
         headlessModule.startHeadless(headlessRequest);
     };
 

@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.source_files = "ios/**/*.{h,m,mm,swift}"
 
   s.dependency "React-Core"
-  s.dependency 'OtplessSDK', '2.1.6'
+  s.dependency 'OtplessSDK', '2.1.8'
   s.swift_versions = ['4.0', '4.1', '4.2', '5.0', '5.1', '5.2', '5.3', '5.4', '5.5']
 
   # Don't install the dependencies when we run `pod install` in the old architecture.
