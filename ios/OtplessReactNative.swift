@@ -52,8 +52,23 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
     @objc(initHeadless:)
     func initHeadless(appId: String) {
         runOnMain {
-            let viewController = UIApplication.shared.delegate?.window??.rootViewController
-            Otpless.sharedInstance.initialise(vc: viewController!, appId: appId)
+          let rootViewController = UIApplication.shared.delegate?.window??.rootViewController
+          if rootViewController != nil {
+            Otpless.sharedInstance.initialise(vc: rootViewController!, appId: appId)
+            return
+          }
+          
+          // Could not get an instance of RootViewController. Try to get RootViewController from `windowScene`.
+          if #available(iOS 13.0, *) {
+            let windowSceneVC = self.getRootViewControllerFromWindowScene()
+            if windowSceneVC != nil {
+              Otpless.sharedInstance.initialise(vc: windowSceneVC!, appId: appId)
+              return
+            }
+          }
+          
+          // Could not get an instance of ViewController, send error response
+          self.onHeadlessResponse(response: HeadlessResponse(responseType: "INITIATE", responseData: ["errorCode": "5309", "errorMessage": "Could not find an instance of UIViewController to attach OtplessView."], statusCode: 500))
         }
     }
     
@@ -140,6 +155,24 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
   @objc(attachSecureSDK:promise:rejecter:)
   func attachSecureSDK(appId: String, promise: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
     reject("SERVICE_ERROR", "Secure SDK is not supported on iOS.", nil)
+  }
+  
+  @available(iOS 13.0, *)
+  private func getRootViewControllerFromWindowScene() -> UIViewController? {
+    guard let windowScene = UIApplication.shared.connectedScenes
+            .filter({ $0.activationState == .foregroundActive })
+            .first as? UIWindowScene else {
+        return nil
+    }
+
+    if #available(iOS 15.0, *) {
+      let keyWindowVC = windowScene.windows.first?.windowScene?.keyWindow?.rootViewController
+      if keyWindowVC != nil {
+        return keyWindowVC
+      }
+    }
+    
+    return windowScene.windows.first?.rootViewController
   }
 }
 

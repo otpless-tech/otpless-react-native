@@ -40,25 +40,29 @@ export default function HeadlessPage() {
             headlessRequest = {
                 phone: phoneNumber,
                 countryCode: countryCode,
-                otp: otp,
-                expiry: expiry,
-                otpLength: otpLength,
-                deliveryChannel: deliveryChannel
+                expiry,
+                otpLength,
+                deliveryChannel
             };
+            if (otp) {
+                headlessRequest.otp = otp;
+            }
         } else if (email) {
             headlessRequest = {
-                email: email,
-                otp: otp,
-                expiry: expiry,
-                otpLength: otpLength,
-                deliveryChannel: deliveryChannel
+                email,
+                expiry,
+                otpLength,
+                deliveryChannel
             };
+            if (otp) {
+                headlessRequest.otp = otp;
+            }
         } else if (channelType) {
             headlessRequest = { channelType };
         }
     
         headlessModule.startHeadless(headlessRequest);
-    };
+    };    
 
     const onHeadlessResult = (data: any) => {
         const dataStr = JSON.stringify(data);
