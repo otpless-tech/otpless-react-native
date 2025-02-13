@@ -27,6 +27,7 @@ import com.otpless.utils.Utility
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.ref.WeakReference
 
 /**
  * @property showOtplessLoginPage to show otpless login page without params
@@ -38,13 +39,16 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
 
   private var _otplessView: OtplessView? = null
 
+  private var attachedActivity: WeakReference<Activity?> = WeakReference(null)
+
   @get:Synchronized
   internal val otplessView: OtplessView?
     get() {
-      if (_otplessView == null) {
+      if (_otplessView == null || attachedActivity.get() != currentActivity) {
         if (currentActivity == null) return null
         _otplessView = OtplessReactNativeManager.wOtplessView.get()
           ?: OtplessManager.getInstance().getOtplessView(currentActivity)
+        attachedActivity = WeakReference(currentActivity)
       }
       return _otplessView
     }
