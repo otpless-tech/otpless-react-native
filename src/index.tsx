@@ -94,7 +94,7 @@ class OtplessHeadlessModule extends OtplessBaseModule {
   }
 
   clearListener() {
-    this.eventEmitter?.removeAllListeners;
+    this.eventEmitter?.removeAllListeners('OTPlessEventResult');
   }
 
   initHeadless(appId: String) {
