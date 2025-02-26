@@ -145,9 +145,9 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
   }
 
   @ReactMethod
-  fun initHeadless(appId: String) {
+  fun initHeadless(appId: String, loginUri: String? = null, timeout: Double = 30.0) {
     reactContext.currentActivity!!.runOnUiThread {
-      otplessView!!.initHeadless(appId)
+      otplessView!!.initHeadless(appId, loginUri, timeout.toLong())
     }
   }
 
@@ -297,5 +297,18 @@ class OtplessReactNativeModule(private val reactContext: ReactApplicationContext
   override fun onNewIntent(intent: Intent?) {
     intent ?: return
     otplessView?.onNewIntent(intent)
+  }
+
+  @ReactMethod
+  fun commitResponse(data: ReadableMap?) {
+    val dataMap = data?.toHashMap() ?: return
+    val ov: OtplessView = this.otplessView ?: return
+    val jsonResponse = JSONObject(dataMap)
+    val headlessResponse = HeadlessResponse(
+      jsonResponse.optString("responseType", ""),
+      jsonResponse.optJSONObject("response"),
+      jsonResponse.optInt("statusCode", 0),
+    )
+    ov.commitHeadlessResponse(headlessResponse)
   }
 }

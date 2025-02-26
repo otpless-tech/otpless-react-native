@@ -18,7 +18,7 @@ export default function HeadlessPage() {
     });
 
     useEffect(() => {
-        headlessModule.initHeadless(APP_ID);
+        headlessModule.initHeadless(APP_ID, null, 28);
         headlessModule.setHeadlessCallback(onHeadlessResult);
         return () => {
             headlessModule.clearListener();
@@ -67,6 +67,7 @@ export default function HeadlessPage() {
     const onHeadlessResult = (data: any) => {
         const dataStr = JSON.stringify(data);
         setResult(dataStr);
+        headlessModule.commitResponse(data);
     };
 
     const copyToClipboard = () => {
