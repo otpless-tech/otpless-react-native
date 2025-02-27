@@ -20,6 +20,7 @@
     [Connector loadUrl:url];
     return true;
   }
+  [Connector registerFBApp:app open:url options:options];
   [super application:app openURL:url options:options];
   return true;
 }
