@@ -32,9 +32,29 @@
 				<string>otpless.app_id_in_lowercase</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>DOT_REVERSED_GOOGLE_CLIENT_ID</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb{FBAPPID}</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>FacebookAppID</key>
+	<string>FBAPPID</string>
+	<key>FacebookClientToken</key>
+	<string>FB_CLIENT_TOKEN</string>
+	<key>FacebookDisplayName</key>
+	<string>OtplessDemo</string>
+	<key>GIDClientID</key>
+	<string>GOOGLE_CLIENT_ID</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>whatsapp</string>
@@ -42,6 +62,7 @@
 		<string>gootpless</string>
 		<string>com.otpless.ios.app.otpless</string>
 		<string>googlegmail</string>
+		<string>fbapi</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

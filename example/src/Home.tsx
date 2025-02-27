@@ -11,7 +11,7 @@ import {
 import 'react-native-gesture-handler';
 import { OtplessModule, OtplessSimUtils } from 'otpless-react-native';
 
-export const APP_ID = "K8K415KI2VMZV27648JJ"
+export const APP_ID = ""
 
 type Props = {
   navigation: StackNavigationProp<any>;
