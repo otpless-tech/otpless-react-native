@@ -11,7 +11,9 @@ RCT_EXTERN_METHOD(showOtplessLoginPage:(NSDictionary *)param
 
 RCT_EXTERN_METHOD(isWhatsappInstalled:(RCTResponseSenderBlock)callback)
 
-RCT_EXTERN_METHOD(initHeadless:(NSString *)appId)
+RCT_EXTERN_METHOD(initHeadless:(NSString *)appId
+                  loginUri: (nullable NSString *) loginUri
+                  timeout: (double) timeout)
 
 RCT_EXTERN_METHOD(setHeadlessCallback)
 
@@ -26,5 +28,8 @@ RCT_EXTERN_METHOD(showPhoneHintLib:(BOOL)showFallback withCallback: (RCTResponse
 RCT_EXTERN_METHOD(setSimEjectionListener:(BOOL)isToAttach)
 RCT_EXTERN_METHOD(getEjectedSimsEntries:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(attachSecureSDK:(NSString *)appId promise:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(commitResponse: (nullable NSDictionary *) response)
+
 @end
 

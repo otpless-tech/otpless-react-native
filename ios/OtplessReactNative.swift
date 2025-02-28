@@ -33,7 +33,7 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
     @objc(showOtplessLoginPage:withCallback:)
     func showOtplessLoginPage(param: [String: Any], callback: @escaping RCTResponseSenderBlock) {
         self.rctCallbackWrapper = RCTSenderWrapper(callback: callback)
-        Otpless.sharedInstance.delegate = self.rctCallbackWrapper
+        Otpless.sharedInstance.setLoginPageDelegate(self.rctCallbackWrapper!)
         let appId: String = param["appId"] as! String
         let params = param["params"] as? [String: Any]
         runOnMain {
@@ -49,12 +49,12 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
         callback([params])
     }
     
-    @objc(initHeadless:)
-    func initHeadless(appId: String) {
+    @objc(initHeadless:loginUri:timeout:)
+    func initHeadless(appId: String, loginUri: String?, timeout: Double) {
         runOnMain {
           let rootViewController = UIApplication.shared.delegate?.window??.rootViewController
           if rootViewController != nil {
-            Otpless.sharedInstance.initialise(vc: rootViewController!, appId: appId)
+            Otpless.sharedInstance.initialise(vc: rootViewController!, appId: appId, timeoutInterval: timeout)
             return
           }
           
@@ -74,7 +74,7 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
     
     @objc(setHeadlessCallback)
     func setHeadlessCallback() {
-        Otpless.sharedInstance.headlessDelegate = self
+        Otpless.sharedInstance.setHeadlessResponseDelegate(self)
     }
     
     @objc(startHeadless:)
@@ -82,11 +82,23 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
         let headlessRequest = createHeadlessRequest(args: request)
         runOnMain {
             if let otp = request["otp"] {
-                Otpless.sharedInstance.verifyOTP(otp: otp as! String, headlessRequest: headlessRequest)
-            } else {
-                Otpless.sharedInstance.startHeadless(headlessRequest: headlessRequest)
+                headlessRequest.setOtp(otp: otp as! String)
             }
+            Otpless.sharedInstance.startHeadless(headlessRequest: headlessRequest)
         }
+    }
+    
+    @objc(commitResponse:)
+    func commitResponse(response: [String: Any]?) {
+        guard let dict = response else {
+            return
+        }
+        let headlessResponse = HeadlessResponse(
+            responseType: dict["responseType"] as? String ?? "",
+            responseData: dict["response"] as? [String: Any],
+            statusCode: dict["statusCode"] as? Int ?? -1000
+        )
+        Otpless.sharedInstance.commitHeadlessResponse(headlessResponse: headlessResponse)
     }
     
     private func createHeadlessRequest(args: [String: Any]) -> HeadlessRequest {
@@ -141,6 +153,8 @@ class OtplessReactNative: RCTEventEmitter, onResponseDelegate, onHeadlessRespons
         params["responseType"] = response!.responseType
         sendEvent(withName: "OTPlessEventResult", body: params)
     }
+    
+    
   
   @objc
   func setSimEjectionListener(_ isToAttach: Bool) {

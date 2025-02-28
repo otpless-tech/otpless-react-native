@@ -38,6 +38,9 @@ target 'OtplessReactNativeExample' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+  
+  pod 'OtplessSDK/GoogleSupport'
+  pod 'OtplessSDK/FacebookSupport'
 
   target 'OtplessReactNativeExampleTests' do
     inherit! :complete

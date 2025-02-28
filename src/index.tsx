@@ -97,12 +97,12 @@ class OtplessHeadlessModule extends OtplessBaseModule {
     this.eventEmitter?.removeAllListeners('OTPlessEventResult');
   }
 
-  initHeadless(appId: String) {
+  initHeadless(appId: String, loginUri: string | null = null, timeout: number = 30.0) {
     if (this.eventEmitter == null) {
       this.eventEmitter = new NativeEventEmitter(OtplessReactNative);
     }
     // call the native method
-    OtplessReactNative.initHeadless(appId);
+    OtplessReactNative.initHeadless(appId, loginUri, timeout);
   }
 
   setHeadlessCallback(callback: OtplessResultCallback) {
@@ -116,7 +116,11 @@ class OtplessHeadlessModule extends OtplessBaseModule {
   }
 
   showPhoneHint(showFallback: boolean, callback: (result: any) => void) {
-    OtplessReactNative.showPhoneHintLib(showFallback, callback)
+    OtplessReactNative.showPhoneHintLib(showFallback, callback);
+  }
+
+  commitResponse(response: any) {
+    OtplessReactNative.commitResponse(response);
   }
 }
 
