@@ -1,5 +1,4 @@
 import { NativeModules, Platform, NativeEventEmitter } from 'react-native';
-import type { Double } from 'react-native/Libraries/Types/CodegenTypes';
 
 const LINKING_ERROR =
   `The package 'otpless-react-native' doesn't seem to be linked. Make sure: \n\n` +
