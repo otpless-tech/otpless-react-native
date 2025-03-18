@@ -1,7 +1,7 @@
 {
   "name": "otpless-react-native",
-  "version": "1.2.2",
-  "description": "core android 2.6.4 and ios 2.2.9 supports. timer, google and facebook support",
+  "version": "1.2.3",
+  "description": "react native debug dependency removed",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/index.d.ts",
@@ -159,7 +159,6 @@
     ]
   },
   "dependencies": {
-    "react-native-debug": "^3.0.0",
     "ts-lint": "^4.5.1"
   }
 }
